@@ -43,18 +43,17 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="bg-surface text-on-surface min-h-dvh flex flex-col items-center justify-center p-6">
-      <div className="w-full max-w-md flex flex-col min-h-[680px] justify-between">
-        <header className="mb-12 flex flex-col gap-6">
+    <div className="bg-surface text-on-surface min-h-dvh flex flex-col items-center p-6 pt-8">
+      <div className="w-full max-w-md flex flex-col min-h-[680px]">
+        <header className="mb-4 flex flex-col gap-6">
           <AppTopBar logoPriority logoSize="md" />
           <div>
             <h1 className="sr-only">Kcalendar</h1>
-            <p className="font-body text-on-surface-variant text-sm tracking-wide">
-              오늘 나는 얼마나 먹었을까?
-            </p>
           </div>
         </header>
-
+        <p className="font-body text-on-surface-variant text-lg tracking-wide mb-4">
+          프로필을 입력해주세요.
+        </p>
         <main className="flex-grow space-y-10">
           {/* 성별 선택 */}
           <section className="space-y-4">
@@ -74,7 +73,7 @@ export default function OnboardingPage() {
                 className={`flex-1 py-4 rounded-md font-body text-sm font-medium transition-colors duration-200 ${
                   gender === "female"
                     ? "bg-primary text-on-primary"
-                    : "bg-surface-container-low text-on-surface hover:bg-surface-container-highest"
+                    : "bg-surface-container-high text-on-surface hover:bg-surface-container-highest"
                 }`}
               >
                 여
@@ -95,8 +94,8 @@ export default function OnboardingPage() {
                 id="height"
                 type="number"
                 inputMode="numeric"
-                className="w-full bg-surface-container-low text-on-surface font-headline text-2xl px-4 pt-8 pb-4 rounded-md focus:bg-surface-container-highest focus:outline-none transition-colors pr-12"
-                placeholder="0"
+                className="w-full bg-surface-container-high text-on-surface font-headline text-2xl px-4 pt-8 pb-4 rounded-md focus:bg-surface-container-highest focus:outline-none transition-colors pr-12"
+                placeholder="170"
                 value={height}
                 onChange={(e) => setHeight(e.target.value)}
               />
@@ -116,8 +115,8 @@ export default function OnboardingPage() {
                 id="weight"
                 type="number"
                 inputMode="numeric"
-                className="w-full bg-surface-container-low text-on-surface font-headline text-2xl px-4 pt-8 pb-4 rounded-md focus:bg-surface-container-highest focus:outline-none transition-colors pr-12"
-                placeholder="0"
+                className="w-full bg-surface-container-high text-on-surface font-headline text-2xl px-4 pt-8 pb-4 rounded-md focus:bg-surface-container-highest focus:outline-none transition-colors pr-12"
+                placeholder="60"
                 value={weight}
                 onChange={(e) => setWeight(e.target.value)}
               />
@@ -159,7 +158,7 @@ export default function OnboardingPage() {
           </section>
         </main>
 
-        <footer className="mt-8">
+        <footer className="mt-8 pb-2">
           <button
             onClick={handleSubmit}
             disabled={!canSubmit}
