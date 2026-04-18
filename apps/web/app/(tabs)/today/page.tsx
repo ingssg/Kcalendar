@@ -37,7 +37,9 @@ export default function TodayPage() {
       </section>
 
       {/* 3단 요약 카드 */}
-      {profile && <SummaryCard bmr={bmr} totalCalories={totalCalories} />}
+      {profile && (
+        <SummaryCard bmr={bmr} totalCalories={totalCalories} hasRecords={entries.length > 0} />
+      )}
 
       {/* 자연어 입력창 */}
       <FoodInput date={todayStr} onEntriesAdded={reload} />

@@ -10,7 +10,7 @@ export function TabBar() {
 
   return (
     <nav
-      className="fixed bottom-0 left-0 w-full flex justify-around items-center bg-surface z-50 rounded-t-lg"
+      className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] flex justify-around items-center bg-surface z-50 rounded-t-lg"
       style={{
         borderTop: '1px solid rgba(198,198,198,0.15)',
         paddingTop: '12px',

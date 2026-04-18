@@ -27,14 +27,19 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="ko" className={`${inter.variable} ${manrope.variable} h-full`}>
+    <html lang="ko" className={`${inter.variable} ${manrope.variable}`}>
       <head>
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=block"
         />
       </head>
-      <body className="h-full">{children}</body>
+      {/* 데스크탑: surface-dim 배경 + 중앙 모바일 컨테이너 */}
+      <body className="bg-surface-dim min-h-dvh flex justify-center">
+        <div className="w-full max-w-[430px] min-h-dvh bg-surface relative">
+          {children}
+        </div>
+      </body>
     </html>
   )
 }
