@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   useCallback,
   useEffect,
@@ -18,6 +19,7 @@ import { FoodInput } from "@/components/food-input";
 const subscribeNoop = () => () => {};
 
 export default function TodayPage() {
+  const router = useRouter();
   const storage = useSyncExternalStore(
     subscribeStorage,
     getStorage,
@@ -43,9 +45,18 @@ export default function TodayPage() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [menuOpen]);
 
+  useEffect(() => {
+    if (profile) return;
+    router.replace("/onboarding");
+  }, [profile, router]);
+
   const bmr = profile?.bmr ?? 0;
   const totalCalories = dayRecord?.totalCalories ?? 0;
   const entries = dayRecord?.entries ?? [];
+
+  if (!profile) {
+    return null;
+  }
 
   return (
     <main className="relative w-full max-w-md mx-auto px-6 pt-8 pb-8 flex flex-col gap-4">
