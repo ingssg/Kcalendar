@@ -1,7 +1,7 @@
 # Kcalendar MVP — Task Checklist
 
 > Last Updated: 2026-04-18
-> Status: 🔴 Not Started
+> Status: 🟡 In Progress — Phase 1 진행 중
 
 ---
 
@@ -11,22 +11,14 @@
 > Branch: `feat/phase-0-scaffold`
 > Effort: S
 
-- [ ] **P0-1** pnpm 설치 확인 + `pnpm init` 루트 초기화
-  - 조건: `pnpm-workspace.yaml` 생성, `apps/*` + `packages/*` 포함
-- [ ] **P0-2** Turborepo 설정
-  - 조건: `turbo.json` 생성, `build`, `dev`, `lint`, `typecheck` 파이프라인 정의
-- [ ] **P0-3** `apps/web` Next.js 15 프로젝트 생성 (TypeScript)
-  - 조건: `pnpm --filter web dev` 실행 시 localhost:3000 응답
-- [ ] **P0-4** `packages/types` 패키지 초기화
-  - 조건: `packages/types/src/index.ts` 존재, `apps/web`에서 import 가능
-- [ ] **P0-5** Husky + lint-staged 설정
-  - 조건: `git commit` 시 ESLint + TypeScript 체크 자동 실행
-- [ ] **P0-6** Commitlint 설정
-  - 조건: `feat: ...` 규칙 외 커밋 메시지 시 에러
-- [ ] **P0-7** `.gitignore` + `.env.local` 제외 설정
-  - 조건: `OPENAI_API_KEY` 포함된 파일이 git에 추적되지 않음
-- [ ] **P0-8** 첫 커밋 + GitHub repo 연결
-  - 커밋: `chore: init monorepo with pnpm and turborepo`
+- [x] **P0-1** pnpm 설치 확인 + `pnpm init` 루트 초기화
+- [x] **P0-2** Turborepo 설정 (`turbo.json`, build/dev/lint/typecheck 파이프라인)
+- [x] **P0-3** `apps/web` Next.js 16 (App Router) + TypeScript 생성
+- [x] **P0-4** `packages/types` 초기화 + `@kcalendar/types` workspace 참조
+- [x] **P0-5** Husky + lint-staged 설정
+- [x] **P0-6** Commitlint 설정 (`commitlint.config.js`)
+- [x] **P0-7** `.gitignore` + `.env.local` 제외 설정
+- [x] **P0-8** 첫 커밋 완료 (`f380ece`) ← GitHub repo 연결 대기 중
 
 ---
 
@@ -37,17 +29,11 @@
 > Effort: S
 > Deps: Phase 0 완료
 
-- [ ] **P1-1** Tailwind CSS v4 설치 + `tailwind.config.ts` 생성
-  - 조건: 커스텀 색상 토큰 9개 모두 Tailwind 클래스로 사용 가능
-- [ ] **P1-2** Google Fonts 설정 (Manrope + Inter)
-  - 조건: `next/font`로 로드, CSS 변수로 Tailwind에 연결
-- [ ] **P1-3** 전역 CSS 변수 + 기본 스타일 설정
-  - 조건: 기본 배경 `#f8f9fa`, 기본 텍스트 `#191c1d` 적용
-- [ ] **P1-4** `packages/types` — `UserProfile`, `FoodEntry`, `DayRecord`, `AppStorage` 정의
-  - 조건: 모든 타입 export, `version: 1` 필드 포함
-- [ ] **P1-5** `apps/web/lib/storage.ts` — localStorage 읽기/쓰기 유틸 구현
-  - 조건: `getStorage()`, `setStorage()`, `migrateIfNeeded()` 함수 존재
-  - 조건: 버전 미스매치 시 마이그레이션 실행
+- [x] **P1-1** Tailwind CSS v4 + `globals.css` `@theme` 블록으로 디자인 토큰 등록 (v4는 CSS-first, config 파일 불필요)
+- [x] **P1-2** Google Fonts (Manrope + Inter) `next/font`로 로드, CSS 변수 연결
+- [x] **P1-3** 전역 CSS — 배경 `#f8f9fa`, 텍스트 `#191c1d`, dark mode 비활성화
+- [x] **P1-4** `packages/types` — 모든 타입 export, `version: 1` 포함
+- [x] **P1-5** `apps/web/lib/storage.ts` — getStorage/setStorage/addFoodEntries/updateFoodEntryCalories/migrateIfNeeded
 - [ ] **P1-6** `apps/web/lib/calorie.ts` — Mifflin-St Jeor 계산 함수
   - 조건: `calculateBMR(gender, height, weight)` → 숫자 반환, 25세 고정
 - [ ] **P1-7** `apps/web/lib/date.ts` — 날짜 유틸 함수
@@ -72,8 +58,7 @@
   - 조건: 성별 버튼 2개 (남/여), 키/몸무게 숫자 입력 (스피너 없음)
   - 조건: 실시간 기준 칼로리 프리뷰 카드 (초록 포인트)
   - 조건: [시작하기] 클릭 시 profile 저장 → `/today` 리다이렉트
-- [ ] **P2-2** `app/page.tsx` — 진입점 분기 로직
-  - 조건: `profile` 있으면 `/today`, 없으면 `/onboarding` 리다이렉트
+- [x] **P2-2** `app/page.tsx` — 진입점 분기 로직 (profile 유무로 /today or /onboarding)
 
 ### 레이아웃 + 탭바
 
