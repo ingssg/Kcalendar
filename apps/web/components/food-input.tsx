@@ -25,6 +25,11 @@ export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
     const text = inputText.trim();
     if (!text || loading) return;
 
+    if (!mealType) {
+      setError("식사 유형을 선택해 주세요!");
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
@@ -45,6 +50,12 @@ export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
       }
 
       const data: ParseFoodResponse = await res.json();
+
+      if (data.items.length === 0) {
+        setError("이해하기 쉬운 음식명을 입력해주세요!");
+        return;
+      }
+
       const newEntries: FoodEntry[] = data.items.map((item) => ({
         id: crypto.randomUUID(),
         name: item.name,
