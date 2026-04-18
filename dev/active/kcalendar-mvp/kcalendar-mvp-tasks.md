@@ -34,14 +34,9 @@
 - [x] **P1-3** 전역 CSS — 배경 `#f8f9fa`, 텍스트 `#191c1d`, dark mode 비활성화
 - [x] **P1-4** `packages/types` — 모든 타입 export, `version: 1` 포함
 - [x] **P1-5** `apps/web/lib/storage.ts` — getStorage/setStorage/addFoodEntries/updateFoodEntryCalories/migrateIfNeeded
-- [ ] **P1-6** `apps/web/lib/calorie.ts` — Mifflin-St Jeor 계산 함수
-  - 조건: `calculateBMR(gender, height, weight)` → 숫자 반환, 25세 고정
-- [ ] **P1-7** `apps/web/lib/date.ts` — 날짜 유틸 함수
-  - 조건: `getWeekDates(date)` → 해당 주 7일 배열, `formatDate(date)` → 'YYYY-MM-DD'
-- [ ] **P1-8** 커밋
-  - `feat(types): define localstorage schema v1`
-  - `feat(web): add tailwind design tokens and fonts`
-  - `feat(web): add storage, calorie, date utils`
+- [x] **P1-6** `apps/web/lib/calorie.ts` — `calculateBMR(gender, height, weight)`, 25세 고정, ×1.2 활동 계수
+- [x] **P1-7** `apps/web/lib/date.ts` — `formatDate`, `getWeekDates`, `formatDisplayDate`, `isToday` 등
+- [x] **P1-8** 커밋 완료 (`f380ece`) — 초기 커밋에 전부 포함
 
 ---
 
