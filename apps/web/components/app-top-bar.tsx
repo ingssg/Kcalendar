@@ -1,6 +1,9 @@
+"use client";
+
 import Link from "next/link";
-import type { ReactNode } from "react";
+import { useSyncExternalStore, type ReactNode } from "react";
 import { AppLogo } from "@/components/app-logo";
+import { defaultStorage, getStorage, subscribeStorage } from "@/lib/storage";
 
 type AppTopBarProps = {
   className?: string;
@@ -17,6 +20,13 @@ export function AppTopBar({
   logoPriority = false,
   logoSize = "md",
 }: AppTopBarProps) {
+  const storage = useSyncExternalStore(
+    subscribeStorage,
+    getStorage,
+    () => defaultStorage,
+  );
+  const logoHref = storage.profile ? "/today" : "/onboarding";
+
   return (
     <div className={`relative flex min-h-14 items-center ${className}`.trim()}>
       <div className="pointer-events-none z-10 flex w-full items-center justify-between gap-4">
@@ -30,8 +40,10 @@ export function AppTopBar({
 
       <div className="absolute inset-0 z-20 flex items-center justify-center">
         <Link
-          href="/today"
-          aria-label="오늘 페이지로 이동"
+          href={logoHref}
+          aria-label={
+            storage.profile ? "오늘 페이지로 이동" : "온보딩 페이지로 이동"
+          }
           className="rounded-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
         >
           <AppLogo priority={logoPriority} size={logoSize} />
