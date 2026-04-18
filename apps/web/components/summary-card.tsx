@@ -16,10 +16,10 @@ export function SummaryCard({
 
   // 기록 없으면 중립 배경, 있으면 상태 반응형
   const bgColor = !hasRecords
-    ? "transparent"
+    ? "#f3f4f5"
     : isOver
-      ? "rgba(125,0,12,0.05)"
-      : "rgba(27,109,36,0.05)";
+      ? "rgba(125,0,12,0.08)"
+      : "rgba(27,109,36,0.08)";
 
   const diffColor = isOver ? "text-tertiary" : "text-secondary";
   const progressColor = isOver ? "bg-tertiary" : "bg-secondary";

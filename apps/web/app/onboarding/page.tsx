@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import type { Gender } from "@kcalendar/types";
-import { AppLogo } from "@/components/app-logo";
+import { AppTopBar } from "@/components/app-top-bar";
 import { calculateBMR } from "@/lib/calorie";
 import { getStorage, setStorage } from "@/lib/storage";
 
@@ -45,8 +45,8 @@ export default function OnboardingPage() {
   return (
     <div className="bg-surface text-on-surface min-h-dvh flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md flex flex-col min-h-[680px] justify-between">
-        <header className="mb-12 flex flex-col gap-4">
-          <AppLogo priority size="lg" />
+        <header className="mb-12 flex flex-col gap-6">
+          <AppTopBar logoPriority logoSize="md" />
           <div>
             <h1 className="sr-only">Kcalendar</h1>
             <p className="font-body text-on-surface-variant text-sm tracking-wide">
@@ -133,8 +133,8 @@ export default function OnboardingPage() {
               className="rounded-xl p-8 flex flex-col items-start justify-center"
               style={{
                 background:
-                  "linear-gradient(135deg, rgba(27,109,36,0.07) 0%, rgba(27,109,36,0.03) 100%)",
-                border: "1px solid rgba(27,109,36,0.12)",
+                  "linear-gradient(135deg, rgba(27,109,36,0.1) 0%, rgba(27,109,36,0.05) 100%)",
+                border: "1px solid rgba(27,109,36,0.16)",
               }}
             >
               <p className="font-label text-xs tracking-widest text-on-surface-variant uppercase mb-2">

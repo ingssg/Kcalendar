@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useSyncExternalStore } from "react";
 import { useRouter, useParams } from "next/navigation";
-import type { DayRecord, UserProfile } from "@kcalendar/types";
-import { getStorage } from "@/lib/storage";
+import { defaultStorage, getStorage, subscribeStorage } from "@/lib/storage";
 import { formatDisplayDate } from "@/lib/date";
-import { AppLogo } from "@/components/app-logo";
+import { AppTopBar } from "@/components/app-top-bar";
 import { SummaryCard } from "@/components/summary-card";
 import { FoodList } from "@/components/food-list";
 
@@ -13,11 +12,13 @@ export default function DateDetailPage() {
   const router = useRouter();
   const params = useParams();
   const dateStr = params.date as string;
-
-  const [profile] = useState<UserProfile | null>(() => getStorage().profile);
-  const [dayRecord] = useState<DayRecord | null>(
-    () => getStorage().records[dateStr] ?? null,
+  const storage = useSyncExternalStore(
+    subscribeStorage,
+    getStorage,
+    () => defaultStorage,
   );
+  const profile = storage.profile;
+  const dayRecord = storage.records[dateStr] ?? null;
 
   const bmr = profile?.bmr ?? 0;
   const totalCalories = dayRecord?.totalCalories ?? 0;
@@ -26,17 +27,20 @@ export default function DateDetailPage() {
   return (
     <>
       <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-107.5 z-50 bg-surface/80 backdrop-blur-md">
-        <div className="flex items-center justify-between px-6 py-4">
-          <button
-            onClick={() => router.back()}
-            className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-high transition-colors active:scale-95 duration-200"
-          >
-            <span className="material-symbols-outlined text-on-surface">
-              arrow_back
-            </span>
-          </button>
-          <AppLogo size="sm" />
-          <div className="w-10" />
+        <div className="px-6 py-4">
+          <AppTopBar
+            logoSize="sm"
+            leftSlot={
+              <button
+                onClick={() => router.back()}
+                className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-high transition-colors active:scale-95 duration-200"
+              >
+                <span className="material-symbols-outlined text-on-surface">
+                  arrow_back
+                </span>
+              </button>
+            }
+          />
         </div>
       </header>
 

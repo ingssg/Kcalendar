@@ -2,27 +2,74 @@ import type { AppStorage, DayRecord, FoodEntry } from "@kcalendar/types";
 
 const STORAGE_KEY = "kcalendar";
 
-const defaultStorage: AppStorage = {
+export const defaultStorage: AppStorage = {
   version: 1,
   profile: null,
   records: {},
 };
 
+const listeners = new Set<() => void>();
+let cachedRaw: string | null = null;
+let cachedStorage: AppStorage = defaultStorage;
+
+function emitStorageChange() {
+  listeners.forEach((listener) => listener());
+}
+
+export function subscribeStorage(listener: () => void): () => void {
+  listeners.add(listener);
+
+  if (typeof window === "undefined") {
+    return () => listeners.delete(listener);
+  }
+
+  const handleStorage = (event: StorageEvent) => {
+    if (event.key === STORAGE_KEY) {
+      listener();
+    }
+  };
+
+  window.addEventListener("storage", handleStorage);
+
+  return () => {
+    listeners.delete(listener);
+    window.removeEventListener("storage", handleStorage);
+  };
+}
+
 export function getStorage(): AppStorage {
   if (typeof window === "undefined") return defaultStorage;
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) return defaultStorage;
+    if (!raw) {
+      cachedRaw = null;
+      cachedStorage = defaultStorage;
+      return defaultStorage;
+    }
+
+    if (raw === cachedRaw) {
+      return cachedStorage;
+    }
+
     const parsed = JSON.parse(raw) as AppStorage;
-    return migrateIfNeeded(parsed);
+    const migrated = migrateIfNeeded(parsed);
+    cachedRaw = raw;
+    cachedStorage = migrated;
+    return migrated;
   } catch {
+    cachedRaw = null;
+    cachedStorage = defaultStorage;
     return defaultStorage;
   }
 }
 
 export function setStorage(storage: AppStorage): void {
   if (typeof window === "undefined") return;
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(storage));
+  const raw = JSON.stringify(storage);
+  cachedRaw = raw;
+  cachedStorage = storage;
+  localStorage.setItem(STORAGE_KEY, raw);
+  emitStorageChange();
 }
 
 export function getDayRecord(date: string): DayRecord | null {
@@ -32,8 +79,13 @@ export function getDayRecord(date: string): DayRecord | null {
 
 export function saveDayRecord(record: DayRecord): void {
   const storage = getStorage();
-  storage.records[record.date] = record;
-  setStorage(storage);
+  setStorage({
+    ...storage,
+    records: {
+      ...storage.records,
+      [record.date]: record,
+    },
+  });
 }
 
 export function addFoodEntries(

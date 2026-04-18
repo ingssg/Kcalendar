@@ -34,7 +34,7 @@ export function WeeklyRow({
 
   if (!hasRecord) {
     return (
-      <div className="w-full flex items-center justify-between p-5 rounded-xl bg-surface-container-low text-left relative overflow-hidden">
+      <div className="w-full flex items-center justify-between p-5 rounded-xl bg-surface-container text-left relative overflow-hidden">
         <div className="flex items-baseline gap-3">
           <span className="font-headline font-bold text-xl text-surface-tint">
             {day}
@@ -58,7 +58,7 @@ export function WeeklyRow({
   return (
     <Link
       href={`/weekly/${dateStr}`}
-      className="w-full flex items-center justify-between p-5 rounded-xl bg-surface-container-lowest transition-colors hover:bg-surface-container-high active:scale-[0.98] text-left relative overflow-hidden"
+      className="w-full flex items-center justify-between p-5 rounded-xl bg-surface-container-low transition-colors hover:bg-surface-container text-left relative overflow-hidden active:scale-[0.98]"
     >
       {isDeficit && (
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-secondary" />

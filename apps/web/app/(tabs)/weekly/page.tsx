@@ -1,8 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import type { DayRecord, UserProfile } from "@kcalendar/types";
-import { getStorage } from "@/lib/storage";
+import { useSyncExternalStore, useState } from "react";
+import { defaultStorage, getStorage, subscribeStorage } from "@/lib/storage";
 import {
   today,
   getWeekDates,
@@ -10,20 +9,25 @@ import {
   addDays,
   isToday,
 } from "@/lib/date";
-import { AppLogo } from "@/components/app-logo";
+import { AppTopBar } from "@/components/app-top-bar";
 import { WeeklyRow } from "@/components/weekly-row";
 
-export default function WeeklyPage() {
-  const todayStr = today();
-  const [anchorDate, setAnchorDate] = useState(todayStr);
-  const [profile] = useState<UserProfile | null>(() => getStorage().profile);
-  const [records] = useState<Record<string, DayRecord>>(
-    () => getStorage().records,
-  );
+const subscribeNoop = () => () => {};
 
-  const weekDates = getWeekDates(anchorDate);
-  const weekLabel = getWeekLabelKo(weekDates);
-  const bmr = profile?.bmr ?? 0;
+export default function WeeklyPage() {
+  const storage = useSyncExternalStore(
+    subscribeStorage,
+    getStorage,
+    () => defaultStorage,
+  );
+  const todayStr = useSyncExternalStore(subscribeNoop, today, () => "");
+  const [weekOffset, setWeekOffset] = useState(0);
+
+  const anchorDate = todayStr ? addDays(todayStr, weekOffset * 7) : "";
+  const weekDates = anchorDate ? getWeekDates(anchorDate) : [];
+  const weekLabel = anchorDate ? getWeekLabelKo(weekDates) : "";
+  const bmr = storage.profile?.bmr ?? 0;
+  const records = storage.records;
 
   const recordedDays = weekDates.filter((d) => {
     const r = records[d];
@@ -46,10 +50,11 @@ export default function WeeklyPage() {
   return (
     <main className="w-full max-w-md mx-auto px-6 pt-8 pb-8">
       <header className="mb-8 flex flex-col gap-5">
-        <AppLogo priority size="md" />
+        <AppTopBar logoPriority logoSize="md" />
         <div className="flex items-center justify-between">
           <button
-            onClick={() => setAnchorDate(addDays(anchorDate, -7))}
+            onClick={() => setWeekOffset((current) => current - 1)}
+            disabled={!anchorDate}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-colors"
           >
             <span className="material-symbols-outlined text-sm">
@@ -63,7 +68,8 @@ export default function WeeklyPage() {
             </h2>
           </div>
           <button
-            onClick={() => setAnchorDate(addDays(anchorDate, 7))}
+            onClick={() => setWeekOffset((current) => current + 1)}
+            disabled={!anchorDate}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-colors"
           >
             <span className="material-symbols-outlined text-sm">
@@ -88,7 +94,7 @@ export default function WeeklyPage() {
 
       {/* 주간 요약 카드 */}
       <div className="grid grid-cols-5 gap-4">
-        <div className="col-span-3 bg-surface-container-lowest p-6 rounded-xl flex flex-col justify-between h-32 shadow-[0_12px_32px_rgba(25,28,29,0.04)]">
+        <div className="col-span-3 bg-surface-container-low p-6 rounded-xl flex flex-col justify-between h-32 shadow-[0_12px_32px_rgba(25,28,29,0.04)]">
           <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-medium">
             주간 합계
           </span>
@@ -109,7 +115,7 @@ export default function WeeklyPage() {
             )}
           </div>
         </div>
-        <div className="col-span-2 bg-surface-container-low p-6 rounded-xl flex flex-col justify-between h-32">
+        <div className="col-span-2 bg-surface-container p-6 rounded-xl flex flex-col justify-between h-32">
           <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-medium">
             기록
           </span>

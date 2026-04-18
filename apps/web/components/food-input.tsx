@@ -75,7 +75,7 @@ export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
   }
 
   return (
-    <section className="flex flex-col gap-4 bg-surface-container-low p-6 rounded-xl">
+    <section className="flex flex-col gap-4 bg-surface-container p-6 rounded-xl">
       <label
         className="font-label text-[0.6875rem] tracking-widest uppercase text-on-surface-variant font-medium"
         htmlFor="food-input"
@@ -108,7 +108,7 @@ export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
         onKeyDown={(e) => {
           if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) handleSubmit();
         }}
-        className="w-full bg-surface-container-low focus:bg-surface-container-highest rounded-md p-4 font-body text-base text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none transition-colors resize-none"
+        className="w-full bg-surface-container-highest focus:bg-surface-container-highest rounded-md p-4 font-body text-base text-on-surface placeholder:text-on-surface-variant/50 focus:outline-none transition-colors resize-none"
         placeholder="바나나 2개, 제육덮밥, 콜라 1캔…"
         rows={3}
         disabled={loading}
