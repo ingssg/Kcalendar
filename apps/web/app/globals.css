@@ -1,0 +1,47 @@
+@import "tailwindcss";
+
+@theme {
+  /* Kcalendar Design System — "The Objective Monolith" */
+
+  /* Surface hierarchy */
+  --color-surface: #f8f9fa;
+  --color-surface-container-lowest: #ffffff;
+  --color-surface-container-low: #f3f4f5;
+  --color-surface-container-high: #e7e8e9;
+
+  /* Text */
+  --color-on-surface: #191c1d;
+  --color-on-surface-variant: #474747;
+
+  /* Primary actions */
+  --color-primary: #000000;
+  --color-primary-container: #3c3b3b;
+  --color-on-primary: #e5e2e1;
+
+  /* Data states */
+  --color-secondary: #1b6d24; /* 기준 이하 (칼로리 부족) */
+  --color-tertiary: #7d000c; /* 기준 초과 (칼로리 과잉) */
+
+  /* Fonts */
+  --font-sans: var(--font-inter);
+  --font-display: var(--font-manrope);
+
+  /* Shadows — ambient light only */
+  --shadow-card: 0 12px 32px rgba(25, 28, 29, 0.04);
+
+  /* Animation */
+  --ease-default: linear;
+  --duration-default: 200ms;
+}
+
+:root {
+  color-scheme: light only;
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  font-family: var(--font-sans, ui-sans-serif, system-ui, sans-serif);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}

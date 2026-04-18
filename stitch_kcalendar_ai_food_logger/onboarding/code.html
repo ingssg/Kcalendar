@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Kcalendar 온보딩</title>
+<script type="text/javascript" nonce="cfc9ca27e4b341a8938a5726b6a" src="//local.adguard.org?ts=1776487834405&amp;type=content-script&amp;dmn=contribution.usercontent.google.com&amp;url=https%3A%2F%2Fcontribution.usercontent.google.com%2Fdownload%3Fc%3DCgthaWRhX2NvZGVmeBJ7Eh1hcHBfY29tcGFuaW9uX2dlbmVyYXRlZF9maWxlcxpaCiVodG1sX2I3YmZmYTNjYWRiYjQ4MGZhYmFjNDk0NzlmY2YyMDc2EgsSBxCy6KnbiRYYAZIBIwoKcHJvamVjdF9pZBIVQhM4NjgxMTI4MDkyMzA3OTMwNjIz%26filename%3D%26opi%3D89354086&amp;app=com.google.Chrome&amp;css=3&amp;js=1&amp;rel=1&amp;rji=1&amp;sbe=1"></script><script type="text/javascript" nonce="cfc9ca27e4b341a8938a5726b6a" src="//local.adguard.org?ts=1776487834405&amp;name=AdGuard%20Extra&amp;type=user-script"></script><script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&amp;family=Manrope:wght@400;500;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "inverse-primary": "#c8c6c5",
+                      "surface-variant": "#e1e3e4",
+                      "surface-dim": "#d9dadb",
+                      "on-primary-fixed": "#ffffff",
+                      "on-surface": "#191c1d",
+                      "on-secondary-container": "#002204",
+                      "surface-bright": "#f8f9fa",
+                      "surface-container-highest": "#e1e3e4",
+                      "inverse-surface": "#2e3132",
+                      "inverse-on-surface": "#f0f1f2",
+                      "secondary-fixed": "#88d982",
+                      "surface-container-low": "#f3f4f5",
+                      "primary": "#000000",
+                      "on-background": "#191c1d",
+                      "on-primary": "#e5e2e1",
+                      "on-secondary-fixed-variant": "#00460e",
+                      "error-container": "#ffdad6",
+                      "primary-fixed": "#5f5e5e",
+                      "tertiary-container": "#da3433",
+                      "on-tertiary-fixed": "#ffffff",
+                      "on-surface-variant": "#474747",
+                      "outline": "#777777",
+                      "surface-container-lowest": "#ffffff",
+                      "error": "#ba1a1a",
+                      "surface": "#f8f9fa",
+                      "tertiary-fixed-dim": "#930010",
+                      "outline-variant": "#c6c6c6",
+                      "on-primary-fixed-variant": "#e5e2e1",
+                      "surface-container-high": "#e7e8e9",
+                      "surface-container": "#edeeef",
+                      "on-secondary-fixed": "#002204",
+                      "tertiary-fixed": "#ba1a20",
+                      "on-secondary": "#ffffff",
+                      "secondary-container": "#95e88f",
+                      "on-error": "#ffffff",
+                      "tertiary": "#7d000c",
+                      "on-tertiary-container": "#ffffff",
+                      "on-error-container": "#410002",
+                      "primary-fixed-dim": "#474746",
+                      "primary-container": "#3c3b3b",
+                      "on-tertiary": "#ffdad6",
+                      "secondary": "#1b6d24",
+                      "on-primary-container": "#ffffff",
+                      "background": "#f8f9fa",
+                      "surface-tint": "#5f5e5e",
+                      "secondary-fixed-dim": "#6dbd6a",
+                      "on-tertiary-fixed-variant": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.125rem",
+                      "lg": "0.25rem",
+                      "xl": "0.5rem",
+                      "full": "0.75rem"
+              },
+              "spacing": {},
+              "fontFamily": {
+                      "headline": [
+                              "Manrope"
+                      ],
+                      "body": [
+                              "Inter"
+                      ],
+                      "label": [
+                              "Inter"
+                      ]
+              }
+      },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+    /* 숫자 입력 스피너(상승/하락 버튼) 제거 */
+    input[type=number]::-webkit-inner-spin-button,
+    input[type=number]::-webkit-outer-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    input[type=number] {
+      -moz-appearance: textfield;
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface font-body antialiased min-h-screen flex flex-col items-center justify-center p-6">
+<div class="w-full max-w-md flex flex-col min-h-[751px] justify-between">
+<header class="mb-12">
+<h1 class="font-headline font-extrabold text-4xl tracking-tighter text-on-surface mb-2">Kcalendar</h1>
+<p class="font-body text-on-surface-variant text-sm tracking-wide">오늘 나는 얼마나 먹었을까?</p>
+</header>
+<main class="flex-grow space-y-10">
+<section class="space-y-4">
+<div class="flex gap-4">
+<button class="flex-1 bg-surface-container-high text-on-surface py-4 rounded-md font-body text-sm font-medium transition-colors hover:bg-surface-container-highest focus:bg-primary focus:text-on-primary">
+                        남
+                    </button>
+<button class="flex-1 bg-surface-container-low text-on-surface py-4 rounded-md font-body text-sm font-medium transition-colors hover:bg-surface-container-highest focus:bg-primary focus:text-on-primary">
+                        여
+                    </button>
+</div>
+</section>
+<section class="space-y-6">
+<div class="relative">
+<label class="absolute left-4 top-3 font-label text-xs tracking-widest text-on-surface-variant uppercase bg-surface-container-low px-1" for="height">키</label>
+<input class="w-full bg-surface-container-low text-on-surface font-headline text-2xl px-4 pt-8 pb-4 rounded-md border-0 focus:ring-0 focus:bg-surface-container-highest focus:outline-none transition-colors pr-12" id="height" placeholder="0" type="number" value="175"/>
+<span class="absolute right-4 bottom-4 font-label text-sm font-medium text-on-surface-variant">cm</span>
+</div>
+<div class="relative">
+<label class="absolute left-4 top-3 font-label text-xs tracking-widest text-on-surface-variant uppercase bg-surface-container-low px-1" for="weight">몸무게</label>
+<input class="w-full bg-surface-container-low text-on-surface font-headline text-2xl px-4 pt-8 pb-4 rounded-md border-0 focus:ring-0 focus:bg-surface-container-highest focus:outline-none transition-colors pr-12" id="weight" placeholder="0" type="number" value="70"/>
+<span class="absolute right-4 bottom-4 font-label text-sm font-medium text-on-surface-variant">kg</span>
+</div>
+</section>
+<section class="pt-8 pb-4">
+<div class="rounded-xl p-8 flex flex-col items-start justify-center" style="background: linear-gradient(135deg, rgba(27,109,36,0.07) 0%, rgba(27,109,36,0.03) 100%); border: 1px solid rgba(27,109,36,0.12);">
+<p class="font-label text-xs tracking-widest text-on-surface-variant uppercase mb-2">하루 기준 칼로리</p>
+<div class="flex items-baseline gap-2">
+<span class="font-headline font-bold text-6xl tracking-tighter text-secondary">1,840</span>
+<span class="font-label text-sm text-secondary opacity-70">kcal</span>
+</div>
+</div>
+</section>
+</main>
+<footer class="mt-8">
+<button class="w-full bg-primary text-on-primary font-body font-medium text-lg py-4 rounded-md bg-gradient-to-b from-primary to-primary-container transition-transform active:scale-[0.98]">
+                시작하기
+            </button>
+</footer>
+</div>
+</body></html>
