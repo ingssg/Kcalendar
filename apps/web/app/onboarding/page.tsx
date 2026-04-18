@@ -12,11 +12,16 @@ export default function OnboardingPage() {
   const [height, setHeight] = useState('')
   const [weight, setWeight] = useState('')
 
-  const bmr = useMemo(() => {
+  const { bmr, rawBMR } = useMemo(() => {
     const h = parseFloat(height)
     const w = parseFloat(weight)
-    if (!gender || !h || !w || h < 50 || h > 300 || w < 20 || w > 500) return null
-    return calculateBMR(gender, h, w)
+    if (!gender || !h || !w || h < 50 || h > 300 || w < 20 || w > 500) {
+      return { bmr: null, rawBMR: null }
+    }
+    // Mifflin-St Jeor: 활동 계수 적용 전 기초대사량
+    const base = 10 * w + 6.25 * h - 5 * 25
+    const raw = Math.round(gender === 'male' ? base + 5 : base - 161)
+    return { bmr: calculateBMR(gender, h, w), rawBMR: raw }
   }, [gender, height, weight])
 
   const canSubmit = gender !== null && height !== '' && weight !== '' && bmr !== null
@@ -139,6 +144,13 @@ export default function OnboardingPage() {
                 <span className="font-label text-sm text-secondary opacity-70">kcal</span>
               </div>
             </div>
+
+            {/* 계산식 안내 */}
+            <p className="font-label text-[0.6875rem] text-on-surface-variant/60 mt-3 leading-relaxed">
+              {rawBMR && bmr
+                ? `기초대사량 ${rawBMR.toLocaleString()} kcal × 1.2 (좌식 활동) = ${bmr.toLocaleString()} kcal`
+                : 'Mifflin-St Jeor 수식 · 25세 기준 · 좌식 활동 계수 ×1.2'}
+            </p>
           </section>
         </main>
 
