@@ -49,42 +49,21 @@
 
 ### 온보딩 화면
 
-- [ ] **P2-1** `app/onboarding/page.tsx` — 온보딩 페이지 구현
-  - 조건: 성별 버튼 2개 (남/여), 키/몸무게 숫자 입력 (스피너 없음)
-  - 조건: 실시간 기준 칼로리 프리뷰 카드 (초록 포인트)
-  - 조건: [시작하기] 클릭 시 profile 저장 → `/today` 리다이렉트
+- [x] **P2-1** `app/onboarding/page.tsx` — 성별/키/몸무게 입력, 실시간 BMR 프리뷰, profile 저장 → /today
 - [x] **P2-2** `app/page.tsx` — 진입점 분기 로직 (profile 유무로 /today or /onboarding)
 
 ### 레이아웃 + 탭바
 
-- [ ] **P2-3** `app/(tabs)/layout.tsx` — 탭바 공통 레이아웃
-  - 조건: 하단 고정 탭바, [오늘] [주간] 탭 전환
-  - 조건: 현재 탭 활성 표시
-- [ ] **P2-4** `components/tab-bar.tsx` — 탭바 컴포넌트
-  - 조건: No-Line Rule 준수 (border 없음)
+- [x] **P2-3** `app/(tabs)/layout.tsx` — 하단 탭바 공통 레이아웃, pb-[90px]
+- [x] **P2-4** `components/tab-bar.tsx` — Material Symbols, active FILL 상태, safe-area inset
 
 ### 탭1: 오늘 화면
 
-- [ ] **P2-5** `components/summary-card.tsx` — 3단 요약 카드
-  - 조건: 기준 / 섭취 / 기준 대비 3개 수치 + 단위(kcal)
-  - 조건: 프로그레스 바 + "기준의 xx% 섭취" 텍스트
-  - 조건: 기준 이하 → 초록 틴트 배경, 기준 초과 → 빨강 틴트 배경
-- [ ] **P2-6** `components/food-list.tsx` — 음식 항목 리스트
-  - 조건: 항목명 + 칼로리 + ✏️ 아이콘
-  - 조건: ✏️ 클릭 → 인라인 칼로리 수정 가능
-  - 조건: `calories: null` 항목은 "추정 불가" 회색 표시, 합산 제외, ✏️ 유지
-  - 조건: No-Divider Rule 준수 (구분선 없음)
-- [ ] **P2-7** 자연어 입력창 + 기록하기 버튼 UI
-  - 조건: placeholder "바나나 2개, 제육덮밥, 콜라 1캔…" 표시
-  - 조건: AI 미연동 상태에서 버튼 클릭 시 로딩 표시 (Phase 3에서 연동)
-- [ ] **P2-8** `app/(tabs)/today/page.tsx` — 탭1 페이지 완성
-  - 조건: 오늘 날짜 헤더 (예: 4월 18일 (금))
-  - 조건: summary-card + food-list + 입력창 배치
-  - 조건: localStorage에서 오늘 데이터 로드
-- [ ] **P2-9** 커밋
-  - `feat(onboarding): implement profile input with calorie preview`
-  - `feat(today): implement summary card and food list components`
-  - `feat(today): implement today page with local storage`
+- [x] **P2-5** `components/summary-card.tsx` — 3단 카드 + 프로그레스바 + 상태 반응형 배경
+- [x] **P2-6** `components/food-list.tsx` — 인라인 수정(✏️→check), 추정 불가 처리, No-Divider
+- [x] **P2-7** `components/food-input.tsx` — 자연어 입력창, loading spinner, 에러 표시
+- [x] **P2-8** `app/(tabs)/today/page.tsx` — 날짜 헤더, localStorage reload 패턴
+- [x] **P2-9** 커밋 완료 (`92d8f6d`)
 
 ---
 
