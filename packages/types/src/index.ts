@@ -8,11 +8,14 @@ export interface UserProfile {
   bmr: number // 기준 칼로리 (kcal/day), Mifflin-St Jeor × 1.2
 }
 
+export type MealType = 'breakfast' | 'lunch' | 'dinner'
+
 export interface FoodEntry {
   id: string
   name: string
   calories: number | null // null = AI 추정 불가
   isEstimated: boolean
+  mealType?: MealType
 }
 
 export interface DayRecord {
