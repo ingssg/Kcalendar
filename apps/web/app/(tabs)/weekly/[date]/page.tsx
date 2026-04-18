@@ -5,6 +5,7 @@ import { useRouter, useParams } from "next/navigation";
 import type { DayRecord, UserProfile } from "@kcalendar/types";
 import { getStorage } from "@/lib/storage";
 import { formatDisplayDate } from "@/lib/date";
+import { AppLogo } from "@/components/app-logo";
 import { SummaryCard } from "@/components/summary-card";
 import { FoodList } from "@/components/food-list";
 
@@ -34,14 +35,18 @@ export default function DateDetailPage() {
               arrow_back
             </span>
           </button>
-          <h1 className="font-headline font-bold tracking-tight text-lg text-on-surface">
-            {formatDisplayDate(dateStr)}
-          </h1>
+          <AppLogo size="sm" />
           <div className="w-10" />
         </div>
       </header>
 
       <main className="w-full max-w-md mx-auto px-6 pt-24 pb-8 flex flex-col gap-8">
+        <section>
+          <h1 className="font-headline text-3xl font-bold tracking-tight text-on-surface">
+            {formatDisplayDate(dateStr)}
+          </h1>
+        </section>
+
         {profile && (
           <SummaryCard
             bmr={bmr}

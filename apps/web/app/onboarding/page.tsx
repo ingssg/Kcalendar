@@ -1,55 +1,58 @@
-'use client'
+"use client";
 
-import { useState, useMemo } from 'react'
-import { useRouter } from 'next/navigation'
-import type { Gender } from '@kcalendar/types'
-import { calculateBMR } from '@/lib/calorie'
-import { getStorage, setStorage } from '@/lib/storage'
+import { useState, useMemo } from "react";
+import { useRouter } from "next/navigation";
+import type { Gender } from "@kcalendar/types";
+import { AppLogo } from "@/components/app-logo";
+import { calculateBMR } from "@/lib/calorie";
+import { getStorage, setStorage } from "@/lib/storage";
 
 export default function OnboardingPage() {
-  const router = useRouter()
-  const [gender, setGender] = useState<Gender | null>(null)
-  const [height, setHeight] = useState('')
-  const [weight, setWeight] = useState('')
+  const router = useRouter();
+  const [gender, setGender] = useState<Gender | null>(null);
+  const [height, setHeight] = useState("");
+  const [weight, setWeight] = useState("");
 
   const { bmr, rawBMR } = useMemo(() => {
-    const h = parseFloat(height)
-    const w = parseFloat(weight)
+    const h = parseFloat(height);
+    const w = parseFloat(weight);
     if (!gender || !h || !w || h < 50 || h > 300 || w < 20 || w > 500) {
-      return { bmr: null, rawBMR: null }
+      return { bmr: null, rawBMR: null };
     }
     // Mifflin-St Jeor: 활동 계수 적용 전 기초대사량
-    const base = 10 * w + 6.25 * h - 5 * 25
-    const raw = Math.round(gender === 'male' ? base + 5 : base - 161)
-    return { bmr: calculateBMR(gender, h, w), rawBMR: raw }
-  }, [gender, height, weight])
+    const base = 10 * w + 6.25 * h - 5 * 25;
+    const raw = Math.round(gender === "male" ? base + 5 : base - 161);
+    return { bmr: calculateBMR(gender, h, w), rawBMR: raw };
+  }, [gender, height, weight]);
 
-  const canSubmit = gender !== null && height !== '' && weight !== '' && bmr !== null
+  const canSubmit =
+    gender !== null && height !== "" && weight !== "" && bmr !== null;
 
   function handleSubmit() {
-    if (!gender || !bmr) return
-    const storage = getStorage()
+    if (!gender || !bmr) return;
+    const storage = getStorage();
     storage.profile = {
       version: 1,
       gender,
       height: parseFloat(height),
       weight: parseFloat(weight),
       bmr,
-    }
-    setStorage(storage)
-    router.push('/today')
+    };
+    setStorage(storage);
+    router.push("/today");
   }
 
   return (
     <div className="bg-surface text-on-surface min-h-dvh flex flex-col items-center justify-center p-6">
       <div className="w-full max-w-md flex flex-col min-h-[680px] justify-between">
-        <header className="mb-12">
-          <h1 className="font-headline font-extrabold text-4xl tracking-tighter text-on-surface mb-2">
-            Kcalendar
-          </h1>
-          <p className="font-body text-on-surface-variant text-sm tracking-wide">
-            오늘 나는 얼마나 먹었을까?
-          </p>
+        <header className="mb-12 flex flex-col gap-4">
+          <AppLogo priority size="lg" />
+          <div>
+            <h1 className="sr-only">Kcalendar</h1>
+            <p className="font-body text-on-surface-variant text-sm tracking-wide">
+              오늘 나는 얼마나 먹었을까?
+            </p>
+          </div>
         </header>
 
         <main className="flex-grow space-y-10">
@@ -57,21 +60,21 @@ export default function OnboardingPage() {
           <section className="space-y-4">
             <div className="flex gap-4">
               <button
-                onClick={() => setGender('male')}
+                onClick={() => setGender("male")}
                 className={`flex-1 py-4 rounded-md font-body text-sm font-medium transition-colors duration-200 ${
-                  gender === 'male'
-                    ? 'bg-primary text-on-primary'
-                    : 'bg-surface-container-high text-on-surface hover:bg-surface-container-highest'
+                  gender === "male"
+                    ? "bg-primary text-on-primary"
+                    : "bg-surface-container-high text-on-surface hover:bg-surface-container-highest"
                 }`}
               >
                 남
               </button>
               <button
-                onClick={() => setGender('female')}
+                onClick={() => setGender("female")}
                 className={`flex-1 py-4 rounded-md font-body text-sm font-medium transition-colors duration-200 ${
-                  gender === 'female'
-                    ? 'bg-primary text-on-primary'
-                    : 'bg-surface-container-low text-on-surface hover:bg-surface-container-highest'
+                  gender === "female"
+                    ? "bg-primary text-on-primary"
+                    : "bg-surface-container-low text-on-surface hover:bg-surface-container-highest"
                 }`}
               >
                 여
@@ -130,8 +133,8 @@ export default function OnboardingPage() {
               className="rounded-xl p-8 flex flex-col items-start justify-center"
               style={{
                 background:
-                  'linear-gradient(135deg, rgba(27,109,36,0.07) 0%, rgba(27,109,36,0.03) 100%)',
-                border: '1px solid rgba(27,109,36,0.12)',
+                  "linear-gradient(135deg, rgba(27,109,36,0.07) 0%, rgba(27,109,36,0.03) 100%)",
+                border: "1px solid rgba(27,109,36,0.12)",
               }}
             >
               <p className="font-label text-xs tracking-widest text-on-surface-variant uppercase mb-2">
@@ -139,9 +142,11 @@ export default function OnboardingPage() {
               </p>
               <div className="flex items-baseline gap-2">
                 <span className="font-headline font-bold text-6xl tracking-tighter text-secondary transition-all duration-200">
-                  {bmr ? bmr.toLocaleString() : '—'}
+                  {bmr ? bmr.toLocaleString() : "—"}
                 </span>
-                <span className="font-label text-sm text-secondary opacity-70">kcal</span>
+                <span className="font-label text-sm text-secondary opacity-70">
+                  kcal
+                </span>
               </div>
             </div>
 
@@ -149,7 +154,7 @@ export default function OnboardingPage() {
             <p className="font-label text-[0.6875rem] text-on-surface-variant/60 mt-3 leading-relaxed">
               {rawBMR && bmr
                 ? `기초대사량 ${rawBMR.toLocaleString()} kcal × 1.2 (좌식 활동) = ${bmr.toLocaleString()} kcal`
-                : 'Mifflin-St Jeor 수식 · 25세 기준 · 좌식 활동 계수 ×1.2'}
+                : "Mifflin-St Jeor 수식 · 25세 기준 · 좌식 활동 계수 ×1.2"}
             </p>
           </section>
         </main>
@@ -165,5 +170,5 @@ export default function OnboardingPage() {
         </footer>
       </div>
     </div>
-  )
+  );
 }

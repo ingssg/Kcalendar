@@ -10,6 +10,7 @@ import {
   addDays,
   isToday,
 } from "@/lib/date";
+import { AppLogo } from "@/components/app-logo";
 import { WeeklyRow } from "@/components/weekly-row";
 
 export default function WeeklyPage() {
@@ -43,29 +44,34 @@ export default function WeeklyPage() {
         : "text-on-surface";
 
   return (
-    <main className="w-full max-w-md mx-auto px-6 pt-10 pb-8">
-      {/* 주간 네비게이션 */}
-      <div className="flex items-center justify-between mb-8">
-        <button
-          onClick={() => setAnchorDate(addDays(anchorDate, -7))}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-colors"
-        >
-          <span className="material-symbols-outlined text-sm">
-            arrow_back_ios_new
-          </span>
-        </button>
-        <h2 className="font-headline font-bold text-lg tracking-tight text-on-surface">
-          {weekLabel}
-        </h2>
-        <button
-          onClick={() => setAnchorDate(addDays(anchorDate, 7))}
-          className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-colors"
-        >
-          <span className="material-symbols-outlined text-sm">
-            arrow_forward_ios
-          </span>
-        </button>
-      </div>
+    <main className="w-full max-w-md mx-auto px-6 pt-8 pb-8">
+      <header className="mb-8 flex flex-col gap-5">
+        <AppLogo priority size="md" />
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => setAnchorDate(addDays(anchorDate, -7))}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">
+              arrow_back_ios_new
+            </span>
+          </button>
+          <div>
+            <h1 className="sr-only">주간 기록</h1>
+            <h2 className="font-headline font-bold text-lg tracking-tight text-on-surface">
+              {weekLabel}
+            </h2>
+          </div>
+          <button
+            onClick={() => setAnchorDate(addDays(anchorDate, 7))}
+            className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-colors"
+          >
+            <span className="material-symbols-outlined text-sm">
+              arrow_forward_ios
+            </span>
+          </button>
+        </div>
+      </header>
 
       {/* 7일 행 */}
       <div className="flex flex-col gap-3 mb-10">

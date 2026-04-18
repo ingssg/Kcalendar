@@ -32,3 +32,11 @@ coverage
 
 # Vercel
 .vercel
+
+# Local docs and planning assets
+.claude/
+CLAUDE.md
+apps/web/CLAUDE.md
+dev/
+stitch-brief.md
+stitch*/
