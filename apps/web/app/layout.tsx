@@ -17,6 +17,12 @@ const manrope = Manrope({
 export const metadata: Metadata = {
   title: "Kcalendar",
   description: "자연어로 기록하고 주간 흐름을 보는 칼로리 기록 서비스",
+  applicationName: "Kcalendar",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Kcalendar",
+  },
   icons: {
     icon: "/favicon.png",
     apple: "/favicon.png",
@@ -27,6 +33,7 @@ export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
+  themeColor: "#f8f9fa",
 };
 
 export default function RootLayout({
