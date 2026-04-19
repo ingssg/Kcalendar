@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import type { FoodEntry, MealType } from "@kcalendar/types";
 import { useFoodMutations } from "@/lib/hooks/use-food-mutations";
 
@@ -24,6 +25,11 @@ const MEAL_ORDER: Record<MealType, number> = {
   dinner: 2,
 };
 
+const MENU_WIDTH = 112;
+const MENU_HEIGHT = 104;
+const MENU_VIEWPORT_GAP = 12;
+const MENU_OFFSET = 4;
+
 export function FoodList({
   entries,
   date,
@@ -33,10 +39,15 @@ export function FoodList({
 }: FoodListProps) {
   const { updateMutation, deleteMutation } = useFoodMutations(date);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
+  const [menuPosition, setMenuPosition] = useState<{
+    left: number;
+    top: number;
+  } | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
   const [editCalories, setEditCalories] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
+  const buttonRefs = useRef<Record<string, HTMLButtonElement | null>>({});
   const sortedEntries = useMemo(
     () =>
       entries
@@ -63,17 +74,59 @@ export function FoodList({
 
   useEffect(() => {
     if (!menuOpenId) return;
+    const activeMenuId = menuOpenId;
+
     function handleClickOutside(e: MouseEvent) {
-      if (menuRef.current && !menuRef.current.contains(e.target as Node)) {
-        setMenuOpenId(null);
+      const target = e.target as Node;
+      const activeButton = buttonRefs.current[activeMenuId];
+
+      if (menuRef.current?.contains(target) || activeButton?.contains(target)) {
+        return;
       }
+
+      setMenuOpenId(null);
+      setMenuPosition(null);
     }
+
+    function updateMenuPosition() {
+      const activeButton = buttonRefs.current[activeMenuId];
+      if (!activeButton) {
+        return;
+      }
+
+      const rect = activeButton.getBoundingClientRect();
+      const maxLeft = Math.max(
+        MENU_VIEWPORT_GAP,
+        window.innerWidth - MENU_WIDTH - MENU_VIEWPORT_GAP,
+      );
+      const left = Math.min(
+        Math.max(rect.right - MENU_WIDTH, MENU_VIEWPORT_GAP),
+        maxLeft,
+      );
+      const hasSpaceBelow =
+        window.innerHeight - rect.bottom >= MENU_HEIGHT + MENU_OFFSET;
+      const top = hasSpaceBelow
+        ? rect.bottom + MENU_OFFSET
+        : Math.max(MENU_VIEWPORT_GAP, rect.top - MENU_HEIGHT - MENU_OFFSET);
+
+      setMenuPosition({ left, top });
+    }
+
+    updateMenuPosition();
     document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    window.addEventListener("resize", updateMenuPosition);
+    window.addEventListener("scroll", updateMenuPosition, true);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+      window.removeEventListener("resize", updateMenuPosition);
+      window.removeEventListener("scroll", updateMenuPosition, true);
+    };
   }, [menuOpenId]);
 
   function startEdit(entry: FoodEntry) {
     setMenuOpenId(null);
+    setMenuPosition(null);
     setEditingId(entry.id);
     setEditName(entry.name);
     setEditCalories(entry.calories?.toString() ?? "");
@@ -100,6 +153,7 @@ export function FoodList({
 
   function handleDelete(entryId: string) {
     setMenuOpenId(null);
+    setMenuPosition(null);
     deleteMutation.mutate(entryId, {
       onSuccess: () => {
         onUpdate?.();
@@ -159,15 +213,42 @@ export function FoodList({
               <>
                 {/* ⋮ 버튼 — 카드 우상단 고정 */}
                 {!readOnly && (
-                  <div
-                    className="absolute top-3 right-3"
-                    ref={menuOpenId === entry.id ? menuRef : undefined}
-                  >
+                  <div className="absolute top-3 right-3">
                     <button
                       data-shadow="none"
-                      onClick={() =>
-                        setMenuOpenId(menuOpenId === entry.id ? null : entry.id)
-                      }
+                      ref={(node) => {
+                        buttonRefs.current[entry.id] = node;
+                      }}
+                      onClick={(event) => {
+                        if (menuOpenId === entry.id) {
+                          setMenuOpenId(null);
+                          setMenuPosition(null);
+                          return;
+                        }
+
+                        const rect =
+                          event.currentTarget.getBoundingClientRect();
+                        const maxLeft = Math.max(
+                          MENU_VIEWPORT_GAP,
+                          window.innerWidth - MENU_WIDTH - MENU_VIEWPORT_GAP,
+                        );
+                        const left = Math.min(
+                          Math.max(rect.right - MENU_WIDTH, MENU_VIEWPORT_GAP),
+                          maxLeft,
+                        );
+                        const hasSpaceBelow =
+                          window.innerHeight - rect.bottom >=
+                          MENU_HEIGHT + MENU_OFFSET;
+                        const top = hasSpaceBelow
+                          ? rect.bottom + MENU_OFFSET
+                          : Math.max(
+                              MENU_VIEWPORT_GAP,
+                              rect.top - MENU_HEIGHT - MENU_OFFSET,
+                            );
+
+                        setMenuOpenId(entry.id);
+                        setMenuPosition({ left, top });
+                      }}
                       className="rounded-full p-1 text-on-surface-variant shadow-none transition-colors hover:bg-transparent hover:text-on-surface hover:shadow-none"
                       aria-label="더보기"
                     >
@@ -175,29 +256,6 @@ export function FoodList({
                         more_vert
                       </span>
                     </button>
-
-                    {menuOpenId === entry.id && (
-                      <div className="absolute right-0 top-full mt-1 bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.12)] z-10 overflow-hidden min-w-24">
-                        <button
-                          onClick={() => startEdit(entry)}
-                          className="flex w-full items-center gap-2 px-4 py-3 font-body text-sm text-on-surface shadow-none transition-colors hover:bg-surface-container-low hover:shadow-none"
-                        >
-                          <span className="material-symbols-outlined text-[16px]">
-                            edit
-                          </span>
-                          수정
-                        </button>
-                        <button
-                          onClick={() => handleDelete(entry.id)}
-                          className="flex w-full items-center gap-2 px-4 py-3 font-body text-sm text-tertiary shadow-none transition-colors hover:bg-surface-container-low hover:shadow-none"
-                        >
-                          <span className="material-symbols-outlined text-[16px]">
-                            delete
-                          </span>
-                          삭제
-                        </button>
-                      </div>
-                    )}
                   </div>
                 )}
 
@@ -238,6 +296,48 @@ export function FoodList({
           </div>
         ))}
       </div>
+      {menuOpenId &&
+        menuPosition &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            ref={menuRef}
+            className="fixed overflow-hidden rounded-xl bg-surface-container-lowest shadow-[0_12px_32px_rgba(25,28,29,0.12)]"
+            style={{
+              left: `${menuPosition.left}px`,
+              top: `${menuPosition.top}px`,
+              width: `${MENU_WIDTH}px`,
+              zIndex: 70,
+            }}
+          >
+            <button
+              onClick={() => {
+                const activeEntry = sortedEntries.find(
+                  (entry) => entry.id === menuOpenId,
+                );
+                if (activeEntry) {
+                  startEdit(activeEntry);
+                }
+              }}
+              className="flex w-full items-center gap-2 px-4 py-3 font-body text-sm text-on-surface shadow-none transition-colors hover:bg-surface-container-low hover:shadow-none"
+            >
+              <span className="material-symbols-outlined text-[16px]">
+                edit
+              </span>
+              수정
+            </button>
+            <button
+              onClick={() => handleDelete(menuOpenId)}
+              className="flex w-full items-center gap-2 px-4 py-3 font-body text-sm text-tertiary shadow-none transition-colors hover:bg-surface-container-low hover:shadow-none"
+            >
+              <span className="material-symbols-outlined text-[16px]">
+                delete
+              </span>
+              삭제
+            </button>
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }
