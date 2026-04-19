@@ -1,17 +1,29 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import type { Gender } from "@kcalendar/types";
 import { AppTopBar } from "@/components/app-top-bar";
+import { AuthMenuButton } from "@/components/auth-menu-button";
 import { calculateBMR } from "@/lib/calorie";
-import { getStorage, setStorage } from "@/lib/storage";
+import { useProfile } from "@/lib/hooks/use-profile";
 
 export default function OnboardingPage() {
   const router = useRouter();
-  const [gender, setGender] = useState<Gender | null>(null);
-  const [height, setHeight] = useState("");
-  const [weight, setWeight] = useState("");
+  const { profile, saveMutation } = useProfile();
+  const [genderOverride, setGenderOverride] = useState<
+    Gender | null | undefined
+  >(undefined);
+  const [heightOverride, setHeightOverride] = useState<string | undefined>(
+    undefined,
+  );
+  const [weightOverride, setWeightOverride] = useState<string | undefined>(
+    undefined,
+  );
+
+  const gender = genderOverride ?? profile?.gender ?? null;
+  const height = heightOverride ?? (profile ? String(profile.height) : "");
+  const weight = weightOverride ?? (profile ? String(profile.weight) : "");
 
   const { bmr, rawBMR } = useMemo(() => {
     const h = parseFloat(height);
@@ -30,23 +42,31 @@ export default function OnboardingPage() {
 
   function handleSubmit() {
     if (!gender || !bmr) return;
-    const storage = getStorage();
-    storage.profile = {
-      version: 1,
-      gender,
-      height: parseFloat(height),
-      weight: parseFloat(weight),
-      bmr,
-    };
-    setStorage(storage);
-    router.push("/today");
+    saveMutation.mutate(
+      {
+        version: 1,
+        gender,
+        height: parseFloat(height),
+        weight: parseFloat(weight),
+        bmr,
+      },
+      {
+        onSuccess: () => {
+          router.push("/today");
+        },
+      },
+    );
   }
 
   return (
     <div className="bg-surface text-on-surface min-h-dvh flex flex-col items-center p-6 pt-8">
       <div className="w-full max-w-md flex flex-col min-h-[680px]">
         <header className="mb-4 flex flex-col gap-6">
-          <AppTopBar logoPriority logoSize="md" />
+          <AppTopBar
+            logoPriority
+            logoSize="md"
+            rightSlot={<AuthMenuButton profileHref="/onboarding" />}
+          />
           <div>
             <h1 className="sr-only">Kcalendar</h1>
           </div>
@@ -59,7 +79,7 @@ export default function OnboardingPage() {
           <section className="space-y-4">
             <div className="flex gap-4">
               <button
-                onClick={() => setGender("male")}
+                onClick={() => setGenderOverride("male")}
                 className={`flex-1 py-4 rounded-md font-body text-sm font-medium transition-colors duration-200 ${
                   gender === "male"
                     ? "bg-primary text-on-primary"
@@ -69,7 +89,7 @@ export default function OnboardingPage() {
                 남
               </button>
               <button
-                onClick={() => setGender("female")}
+                onClick={() => setGenderOverride("female")}
                 className={`flex-1 py-4 rounded-md font-body text-sm font-medium transition-colors duration-200 ${
                   gender === "female"
                     ? "bg-primary text-on-primary"
@@ -97,7 +117,7 @@ export default function OnboardingPage() {
                 className="w-full bg-surface-container-high text-on-surface font-headline text-2xl px-4 pt-8 pb-4 rounded-md focus:bg-surface-container-highest focus:outline-none transition-colors pr-12"
                 placeholder="170"
                 value={height}
-                onChange={(e) => setHeight(e.target.value)}
+                onChange={(e) => setHeightOverride(e.target.value)}
               />
               <span className="absolute right-4 bottom-4 font-label text-sm font-medium text-on-surface-variant">
                 cm
@@ -118,7 +138,7 @@ export default function OnboardingPage() {
                 className="w-full bg-surface-container-high text-on-surface font-headline text-2xl px-4 pt-8 pb-4 rounded-md focus:bg-surface-container-highest focus:outline-none transition-colors pr-12"
                 placeholder="60"
                 value={weight}
-                onChange={(e) => setWeight(e.target.value)}
+                onChange={(e) => setWeightOverride(e.target.value)}
               />
               <span className="absolute right-4 bottom-4 font-label text-sm font-medium text-on-surface-variant">
                 kg
@@ -161,10 +181,10 @@ export default function OnboardingPage() {
         <footer className="mt-8 pb-2">
           <button
             onClick={handleSubmit}
-            disabled={!canSubmit}
+            disabled={!canSubmit || saveMutation.isPending}
             className="w-full bg-primary text-on-primary font-body font-medium text-lg py-4 rounded-md bg-gradient-to-b from-primary to-primary-container transition-all active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed disabled:active:scale-100"
           >
-            시작하기
+            {saveMutation.isPending ? "저장 중..." : "시작하기"}
           </button>
         </footer>
       </div>

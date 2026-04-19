@@ -20,7 +20,7 @@ export function AppLogo({
   return (
     <Image
       src="/logo.png"
-      alt="Kcalendar"
+      alt=""
       width={509}
       height={103}
       priority={priority}

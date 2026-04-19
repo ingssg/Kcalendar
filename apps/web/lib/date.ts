@@ -15,6 +15,14 @@ export function formatDisplayDate(dateStr: string): string {
   return `${month}월 ${day}일 (${dayName})`;
 }
 
+export function formatFoodRecordTitle(dateStr: string): string {
+  const date = parseDate(dateStr);
+  const year = date.getFullYear();
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${year}년 ${month}월 ${day}일에 먹은 것`;
+}
+
 export function today(): string {
   return formatDate(new Date());
 }

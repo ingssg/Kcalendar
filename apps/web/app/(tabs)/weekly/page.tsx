@@ -1,7 +1,6 @@
 "use client";
 
-import { useSyncExternalStore, useState } from "react";
-import { defaultStorage, getStorage, subscribeStorage } from "@/lib/storage";
+import { useState, useSyncExternalStore } from "react";
 import {
   today,
   getWeekDates,
@@ -9,25 +8,29 @@ import {
   addDays,
   isToday,
 } from "@/lib/date";
+import { useAuth } from "@/lib/hooks/use-auth";
+import { useProfile } from "@/lib/hooks/use-profile";
+import { useWeeklyRecords } from "@/lib/hooks/use-weekly-records";
 import { AppTopBar } from "@/components/app-top-bar";
+import { AuthMenuButton } from "@/components/auth-menu-button";
+import { LoginBanner } from "@/components/login-banner";
 import { WeeklyRow } from "@/components/weekly-row";
+import { dismissNudge, shouldShowNudge } from "@/lib/login-nudge";
 
 const subscribeNoop = () => () => {};
 
 export default function WeeklyPage() {
-  const storage = useSyncExternalStore(
-    subscribeStorage,
-    getStorage,
-    () => defaultStorage,
-  );
   const todayStr = useSyncExternalStore(subscribeNoop, today, () => "");
+  const { isLoggedIn, isReady } = useAuth();
+  const { profile } = useProfile();
   const [weekOffset, setWeekOffset] = useState(0);
+  const [dismissedWeeklyBanner, setDismissedWeeklyBanner] = useState(false);
 
   const anchorDate = todayStr ? addDays(todayStr, weekOffset * 7) : "";
   const weekDates = anchorDate ? getWeekDates(anchorDate) : [];
   const weekLabel = anchorDate ? getWeekLabelKo(weekDates) : "";
-  const bmr = storage.profile?.bmr ?? 0;
-  const records = storage.records;
+  const bmr = profile?.bmr ?? 0;
+  const { records } = useWeeklyRecords(weekDates);
 
   const recordedDays = weekDates.filter((d) => {
     const r = records[d];
@@ -47,10 +50,20 @@ export default function WeeklyPage() {
         ? "text-tertiary"
         : "text-on-surface";
 
+  const showWeeklyBanner =
+    isReady &&
+    !isLoggedIn &&
+    !dismissedWeeklyBanner &&
+    shouldShowNudge("weekly", { ignoreSession: true });
+
   return (
     <main className="w-full max-w-md mx-auto px-6 pt-8 pb-8">
       <header className="mb-8 flex flex-col gap-5">
-        <AppTopBar logoPriority logoSize="md" />
+        <AppTopBar
+          logoPriority
+          logoSize="md"
+          rightSlot={<AuthMenuButton profileHref="/onboarding" />}
+        />
         <div className="flex items-center justify-between">
           <button
             onClick={() => setWeekOffset((current) => current - 1)}
@@ -80,16 +93,30 @@ export default function WeeklyPage() {
       </header>
 
       {/* 7일 행 */}
-      <div className="flex flex-col gap-3 mb-10">
-        {weekDates.map((d) => (
-          <WeeklyRow
-            key={d}
-            dateStr={d}
-            record={records[d] ?? null}
-            bmr={bmr}
-            isToday={isToday(d)}
-          />
-        ))}
+      <div className="relative mb-10">
+        <div className="flex flex-col gap-3">
+          {weekDates.map((d) => (
+            <WeeklyRow
+              key={d}
+              dateStr={d}
+              record={records[d] ?? null}
+              bmr={bmr}
+              isToday={isToday(d)}
+            />
+          ))}
+        </div>
+
+        {showWeeklyBanner && (
+          <div className="absolute left-1/2 top-1/2 z-10 w-[calc(100%-1.5rem)] max-w-sm -translate-x-1/2 -translate-y-1/2">
+            <LoginBanner
+              variant="card-cta"
+              onDismiss={() => {
+                dismissNudge("weekly");
+                setDismissedWeeklyBanner(true);
+              }}
+            />
+          </div>
+        )}
       </div>
 
       {/* 주간 요약 카드 */}

@@ -1,18 +1,7 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Manrope } from "next/font/google";
+import { AuthInitializer } from "@/components/auth-initializer";
+import { QueryProvider } from "@/providers/query-provider";
 import "./globals.css";
-
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  display: "swap",
-});
-
-const manrope = Manrope({
-  variable: "--font-manrope",
-  subsets: ["latin"],
-  display: "swap",
-});
 
 export const metadata: Metadata = {
   title: "Kcalendar",
@@ -43,7 +32,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="ko" className={`${inter.variable} ${manrope.variable}`}>
+    <html lang="ko">
       <head>
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link
@@ -53,9 +42,12 @@ export default function RootLayout({
       </head>
       {/* 데스크탑: surface-dim 배경 + 중앙 모바일 컨테이너 */}
       <body className="bg-surface-dim min-h-dvh flex justify-center">
-        <div className="w-full max-w-107.5 min-h-dvh bg-surface relative">
-          {children}
-        </div>
+        <QueryProvider>
+          <AuthInitializer />
+          <div className="w-full max-w-107.5 min-h-dvh bg-surface relative">
+            {children}
+          </div>
+        </QueryProvider>
       </body>
     </html>
   );

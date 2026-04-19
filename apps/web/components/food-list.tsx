@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useRef } from "react";
 import type { FoodEntry, MealType } from "@kcalendar/types";
-import { updateFoodEntry, deleteFoodEntry } from "@/lib/storage";
+import { useFoodMutations } from "@/lib/hooks/use-food-mutations";
 
 interface FoodListProps {
   entries: FoodEntry[];
   date: string;
   readOnly?: boolean;
   onUpdate?: () => void;
+  title?: string;
 }
 
 const MEAL_LABEL: Record<MealType, string> = {
@@ -22,7 +23,9 @@ export function FoodList({
   date,
   readOnly = false,
   onUpdate,
+  title = "오늘의 기록",
 }: FoodListProps) {
+  const { updateMutation, deleteMutation } = useFoodMutations(date);
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editName, setEditName] = useState("");
@@ -49,18 +52,30 @@ export function FoodList({
 
   function saveEdit(entryId: string) {
     const calories = editCalories === "" ? null : parseInt(editCalories, 10);
-    updateFoodEntry(date, entryId, {
-      name: editName.trim() || undefined,
-      calories: isNaN(calories as number) ? null : calories,
-    });
-    onUpdate?.();
-    setEditingId(null);
+    updateMutation.mutate(
+      {
+        entryId,
+        patch: {
+          name: editName.trim() || undefined,
+          calories: Number.isNaN(calories) ? null : calories,
+        },
+      },
+      {
+        onSuccess: () => {
+          onUpdate?.();
+          setEditingId(null);
+        },
+      },
+    );
   }
 
   function handleDelete(entryId: string) {
     setMenuOpenId(null);
-    deleteFoodEntry(date, entryId);
-    onUpdate?.();
+    deleteMutation.mutate(entryId, {
+      onSuccess: () => {
+        onUpdate?.();
+      },
+    });
   }
 
   if (entries.length === 0) return null;
@@ -68,7 +83,7 @@ export function FoodList({
   return (
     <section className="flex flex-col gap-6">
       <h3 className="font-headline text-xl font-bold text-on-surface tracking-tight">
-        오늘의 기록
+        {title}
       </h3>
       <div className="flex flex-col gap-4">
         {entries.map((entry) => (
@@ -120,10 +135,11 @@ export function FoodList({
                     ref={menuOpenId === entry.id ? menuRef : undefined}
                   >
                     <button
+                      data-shadow="none"
                       onClick={() =>
                         setMenuOpenId(menuOpenId === entry.id ? null : entry.id)
                       }
-                      className="text-on-surface-variant hover:text-on-surface transition-colors p-1.5 rounded-full hover:bg-surface-container-high"
+                      className="rounded-full p-1 text-on-surface-variant shadow-none transition-colors hover:bg-transparent hover:text-on-surface hover:shadow-none"
                       aria-label="더보기"
                     >
                       <span className="material-symbols-outlined text-[18px]">
@@ -135,7 +151,7 @@ export function FoodList({
                       <div className="absolute right-0 top-full mt-1 bg-surface-container-lowest rounded-xl shadow-[0_12px_32px_rgba(25,28,29,0.12)] z-10 overflow-hidden min-w-24">
                         <button
                           onClick={() => startEdit(entry)}
-                          className="w-full flex items-center gap-2 px-4 py-3 font-body text-sm text-on-surface hover:bg-surface-container-low transition-colors"
+                          className="flex w-full items-center gap-2 px-4 py-3 font-body text-sm text-on-surface shadow-none transition-colors hover:bg-surface-container-low hover:shadow-none"
                         >
                           <span className="material-symbols-outlined text-[16px]">
                             edit
@@ -144,7 +160,7 @@ export function FoodList({
                         </button>
                         <button
                           onClick={() => handleDelete(entry.id)}
-                          className="w-full flex items-center gap-2 px-4 py-3 font-body text-sm text-tertiary hover:bg-surface-container-low transition-colors"
+                          className="flex w-full items-center gap-2 px-4 py-3 font-body text-sm text-tertiary shadow-none transition-colors hover:bg-surface-container-low hover:shadow-none"
                         >
                           <span className="material-symbols-outlined text-[16px]">
                             delete

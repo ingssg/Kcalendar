@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import type { FoodEntry, MealType, ParseFoodResponse } from "@kcalendar/types";
-import { addFoodEntries } from "@/lib/storage";
+import { useFoodMutations } from "@/lib/hooks/use-food-mutations";
 
 interface FoodInputProps {
   date: string;
@@ -16,6 +16,7 @@ const MEAL_OPTIONS: { value: MealType; label: string }[] = [
 ];
 
 export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
+  const { addMutation } = useFoodMutations(date);
   const [inputText, setInputText] = useState("");
   const [mealType, setMealType] = useState<MealType | null>(null);
   const [loading, setLoading] = useState(false);
@@ -64,11 +65,11 @@ export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
         ...(mealType ? { mealType } : {}),
       }));
 
-      addFoodEntries(date, newEntries);
+      await addMutation.mutateAsync(newEntries);
       onEntriesAdded();
       setInputText("");
     } catch {
-      setError("네트워크 오류가 발생했습니다.");
+      setError("기록 저장에 실패했습니다.");
     } finally {
       setLoading(false);
     }

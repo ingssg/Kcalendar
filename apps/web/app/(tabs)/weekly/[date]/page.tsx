@@ -1,10 +1,11 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
 import { useRouter, useParams } from "next/navigation";
-import { defaultStorage, getStorage, subscribeStorage } from "@/lib/storage";
-import { formatDisplayDate } from "@/lib/date";
+import { formatDisplayDate, formatFoodRecordTitle } from "@/lib/date";
+import { useDayRecord } from "@/lib/hooks/use-day-record";
+import { useProfile } from "@/lib/hooks/use-profile";
 import { AppTopBar } from "@/components/app-top-bar";
+import { AuthMenuButton } from "@/components/auth-menu-button";
 import { SummaryCard } from "@/components/summary-card";
 import { FoodList } from "@/components/food-list";
 
@@ -12,13 +13,8 @@ export default function DateDetailPage() {
   const router = useRouter();
   const params = useParams();
   const dateStr = params.date as string;
-  const storage = useSyncExternalStore(
-    subscribeStorage,
-    getStorage,
-    () => defaultStorage,
-  );
-  const profile = storage.profile;
-  const dayRecord = storage.records[dateStr] ?? null;
+  const { profile } = useProfile();
+  const { record: dayRecord } = useDayRecord(dateStr);
 
   const bmr = profile?.bmr ?? 0;
   const totalCalories = dayRecord?.totalCalories ?? 0;
@@ -40,6 +36,7 @@ export default function DateDetailPage() {
                 </span>
               </button>
             }
+            rightSlot={<AuthMenuButton profileHref="/onboarding" />}
           />
         </div>
       </header>
@@ -60,7 +57,12 @@ export default function DateDetailPage() {
         )}
 
         {entries.length > 0 ? (
-          <FoodList entries={entries} date={dateStr} readOnly />
+          <FoodList
+            entries={entries}
+            date={dateStr}
+            readOnly
+            title={formatFoodRecordTitle(dateStr)}
+          />
         ) : (
           <p className="font-body text-sm text-on-surface-variant">
             이 날의 기록이 없습니다.

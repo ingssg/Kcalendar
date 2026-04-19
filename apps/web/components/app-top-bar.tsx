@@ -38,13 +38,13 @@ export function AppTopBar({
         </div>
       </div>
 
-      <div className="absolute inset-0 z-20 flex items-center justify-center">
+      <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
         <Link
           href={logoHref}
           aria-label={
             storage.profile ? "오늘 페이지로 이동" : "온보딩 페이지로 이동"
           }
-          className="rounded-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
+          className="pointer-events-auto rounded-md cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/20"
         >
           <AppLogo priority={logoPriority} size={logoSize} />
         </Link>

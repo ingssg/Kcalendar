@@ -72,6 +72,32 @@ export function setStorage(storage: AppStorage): void {
   emitStorageChange();
 }
 
+export function clearStoredProfile(): void {
+  const storage = getStorage();
+
+  if (!storage.profile) {
+    return;
+  }
+
+  setStorage({
+    ...storage,
+    profile: null,
+  });
+}
+
+export function clearStoredRecords(): void {
+  const storage = getStorage();
+
+  if (Object.keys(storage.records).length === 0) {
+    return;
+  }
+
+  setStorage({
+    ...storage,
+    records: {},
+  });
+}
+
 export function getDayRecord(date: string): DayRecord | null {
   const storage = getStorage();
   return storage.records[date] ?? null;

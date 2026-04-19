@@ -1,20 +1,24 @@
-'use client'
+"use client";
 
-import { useEffect } from 'react'
-import { useRouter } from 'next/navigation'
-import { getStorage } from '@/lib/storage'
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { useProfile } from "@/lib/hooks/use-profile";
 
 export default function RootPage() {
-  const router = useRouter()
+  const router = useRouter();
+  const { profile, isLoading } = useProfile();
 
   useEffect(() => {
-    const storage = getStorage()
-    if (storage.profile) {
-      router.replace('/today')
-    } else {
-      router.replace('/onboarding')
+    if (isLoading) {
+      return;
     }
-  }, [router])
 
-  return null
+    if (profile) {
+      router.replace("/today");
+    } else {
+      router.replace("/onboarding");
+    }
+  }, [isLoading, profile, router]);
+
+  return null;
 }

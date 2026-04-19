@@ -28,10 +28,22 @@
   --color-outline-variant: #c6c6c6;
 
   /* ── Fonts ── */
-  --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-headline: var(--font-manrope), ui-sans-serif, system-ui, sans-serif;
-  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
-  --font-label: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-sans:
+    "Pretendard Variable", "Pretendard", "SUIT Variable",
+    "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-headline:
+    "Manrope", "Pretendard Variable", "Pretendard", "SUIT Variable",
+    "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-body:
+    "Pretendard Variable", "Pretendard", "SUIT Variable",
+    "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic",
+    ui-sans-serif, system-ui, sans-serif;
+  --font-label:
+    "Pretendard Variable", "Pretendard", "SUIT Variable",
+    "Noto Sans KR", "Apple SD Gothic Neo", "Malgun Gothic",
+    ui-sans-serif, system-ui, sans-serif;
 }
 
 :root {
@@ -43,6 +55,28 @@ body {
   color: var(--color-on-surface);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+button {
+  cursor: pointer;
+  box-shadow:
+    0 8px 20px rgba(25, 28, 29, 0.08),
+    0 1px 2px rgba(25, 28, 29, 0.06);
+}
+
+button:hover:not(:disabled) {
+  box-shadow:
+    0 10px 24px rgba(25, 28, 29, 0.1),
+    0 2px 4px rgba(25, 28, 29, 0.08);
+}
+
+button[data-shadow="none"],
+button[data-shadow="none"]:hover:not(:disabled) {
+  box-shadow: none;
+}
+
+button:disabled {
+  cursor: not-allowed;
 }
 
 /* 숫자 입력 스피너 제거 */
