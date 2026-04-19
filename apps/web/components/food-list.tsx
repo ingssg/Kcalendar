@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import type { FoodEntry, MealType } from "@kcalendar/types";
 import { useFoodMutations } from "@/lib/hooks/use-food-mutations";
 
@@ -18,6 +18,12 @@ const MEAL_LABEL: Record<MealType, string> = {
   dinner: "저녁",
 };
 
+const MEAL_ORDER: Record<MealType, number> = {
+  breakfast: 0,
+  lunch: 1,
+  dinner: 2,
+};
+
 export function FoodList({
   entries,
   date,
@@ -31,6 +37,29 @@ export function FoodList({
   const [editName, setEditName] = useState("");
   const [editCalories, setEditCalories] = useState("");
   const menuRef = useRef<HTMLDivElement>(null);
+  const sortedEntries = useMemo(
+    () =>
+      entries
+        .map((entry, index) => ({ entry, index }))
+        .sort((left, right) => {
+          const leftOrder =
+            left.entry.mealType !== undefined
+              ? MEAL_ORDER[left.entry.mealType]
+              : Number.MAX_SAFE_INTEGER;
+          const rightOrder =
+            right.entry.mealType !== undefined
+              ? MEAL_ORDER[right.entry.mealType]
+              : Number.MAX_SAFE_INTEGER;
+
+          if (leftOrder !== rightOrder) {
+            return leftOrder - rightOrder;
+          }
+
+          return left.index - right.index;
+        })
+        .map(({ entry }) => entry),
+    [entries],
+  );
 
   useEffect(() => {
     if (!menuOpenId) return;
@@ -86,7 +115,7 @@ export function FoodList({
         {title}
       </h3>
       <div className="flex flex-col gap-4">
-        {entries.map((entry) => (
+        {sortedEntries.map((entry) => (
           <div
             key={entry.id}
             className="relative bg-surface-container-lowest rounded-xl px-5 shadow-[0_12px_32px_rgba(25,28,29,0.04)]"
