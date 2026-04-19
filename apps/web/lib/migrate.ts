@@ -111,7 +111,8 @@ async function loadMergePreview(userId: string): Promise<MergePreview> {
   return {
     localProfile,
     remoteProfile,
-    hasPendingProfile: !profilesEqual(localProfile, remoteProfile),
+    hasPendingProfile:
+      localProfile !== null && !profilesEqual(localProfile, remoteProfile),
     pendingEntryDates,
     pendingEntryCount,
   };
