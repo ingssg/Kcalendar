@@ -22,6 +22,7 @@ type UserProfileRow = {
   gender: UserProfile["gender"];
   height: number;
   weight: number;
+  age: number | null;
   bmr: number;
   version: UserProfile["version"];
   created_at: string;
@@ -225,7 +226,7 @@ export async function fetchProfile(
   const { data, error } = await supabase
     .from("user_profiles")
     .select(
-      "user_id, gender, height, weight, bmr, version, created_at, updated_at",
+      "user_id, gender, height, weight, age, bmr, version, created_at, updated_at",
     )
     .eq("user_id", userId)
     .maybeSingle();
@@ -245,6 +246,7 @@ export async function fetchProfile(
     gender: row.gender,
     height: Number(row.height),
     weight: Number(row.weight),
+    ...(row.age != null ? { age: row.age } : {}),
     bmr: row.bmr,
   };
 }
@@ -257,6 +259,7 @@ export async function upsertProfile(userId: string, profile: UserProfile) {
       gender: profile.gender,
       height: profile.height,
       weight: profile.weight,
+      age: profile.age ?? null,
       bmr: profile.bmr,
       version: profile.version,
     },

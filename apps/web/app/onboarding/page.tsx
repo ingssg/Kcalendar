@@ -20,25 +20,43 @@ export default function OnboardingPage() {
   const [weightOverride, setWeightOverride] = useState<string | undefined>(
     undefined,
   );
+  const [ageOverride, setAgeOverride] = useState<string | undefined>(undefined);
 
   const gender = genderOverride ?? profile?.gender ?? null;
   const height = heightOverride ?? (profile ? String(profile.height) : "");
   const weight = weightOverride ?? (profile ? String(profile.weight) : "");
+  const age = ageOverride ?? (profile?.age ? String(profile.age) : "");
 
   const { bmr, rawBMR } = useMemo(() => {
     const h = parseFloat(height);
     const w = parseFloat(weight);
-    if (!gender || !h || !w || h < 50 || h > 300 || w < 20 || w > 500) {
+    const a = parseInt(age, 10);
+    if (
+      !gender ||
+      !h ||
+      !w ||
+      !a ||
+      h < 50 ||
+      h > 300 ||
+      w < 20 ||
+      w > 500 ||
+      a < 10 ||
+      a > 100
+    ) {
       return { bmr: null, rawBMR: null };
     }
     // Mifflin-St Jeor: 활동 계수 적용 전 기초대사량
-    const base = 10 * w + 6.25 * h - 5 * 25;
+    const base = 10 * w + 6.25 * h - 5 * a;
     const raw = Math.round(gender === "male" ? base + 5 : base - 161);
-    return { bmr: calculateBMR(gender, h, w), rawBMR: raw };
-  }, [gender, height, weight]);
+    return { bmr: calculateBMR(gender, h, w, a), rawBMR: raw };
+  }, [gender, height, weight, age]);
 
   const canSubmit =
-    gender !== null && height !== "" && weight !== "" && bmr !== null;
+    gender !== null &&
+    height !== "" &&
+    weight !== "" &&
+    age !== "" &&
+    bmr !== null;
 
   function handleSubmit() {
     if (!gender || !bmr) return;
@@ -48,6 +66,7 @@ export default function OnboardingPage() {
         gender,
         height: parseFloat(height),
         weight: parseFloat(weight),
+        age: parseInt(age, 10),
         bmr,
       },
       {
@@ -144,6 +163,27 @@ export default function OnboardingPage() {
                 kg
               </span>
             </div>
+
+            <div className="relative">
+              <label
+                className="absolute left-4 top-3 font-label text-xs tracking-widest text-on-surface-variant uppercase"
+                htmlFor="age"
+              >
+                나이
+              </label>
+              <input
+                id="age"
+                type="number"
+                inputMode="numeric"
+                className="w-full bg-surface-container-high text-on-surface font-headline text-2xl px-4 pt-8 pb-4 rounded-md focus:bg-surface-container-highest focus:outline-none transition-colors pr-12"
+                placeholder="25"
+                value={age}
+                onChange={(e) => setAgeOverride(e.target.value)}
+              />
+              <span className="absolute right-4 bottom-4 font-label text-sm font-medium text-on-surface-variant">
+                세
+              </span>
+            </div>
           </section>
 
           {/* 기준 칼로리 프리뷰 */}
@@ -173,7 +213,7 @@ export default function OnboardingPage() {
             <p className="font-label text-[0.6875rem] text-on-surface-variant/60 mt-3 leading-relaxed">
               {rawBMR && bmr
                 ? `기초대사량 ${rawBMR.toLocaleString()} kcal × 1.2 (좌식 활동) = ${bmr.toLocaleString()} kcal`
-                : "Mifflin-St Jeor 수식 · 25세 기준 · 좌식 활동 계수 ×1.2"}
+                : "Mifflin-St Jeor 수식 · 좌식 활동 계수 ×1.2"}
             </p>
           </section>
         </main>

@@ -13,6 +13,7 @@ export interface UserProfile {
   gender: Gender
   height: number // cm
   weight: number // kg
+  age?: number // 세
   bmr: number // 기준 칼로리 (kcal/day), Mifflin-St Jeor × 1.2
 }
 

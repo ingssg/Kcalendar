@@ -57,6 +57,7 @@ function profilesEqual(left: UserProfile | null, right: UserProfile | null) {
     left.gender === right.gender &&
     left.height === right.height &&
     left.weight === right.weight &&
+    left.age === right.age &&
     left.bmr === right.bmr
   );
 }
