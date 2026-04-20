@@ -14,6 +14,8 @@ interface FoodListProps {
   readOnly?: boolean;
   onUpdate?: () => void;
   title?: string;
+  scrollTargetGroup?: { group: GroupKey; entryId: string } | null;
+  onScrollHandled?: () => void;
 }
 
 type RecordFilter = "all" | MealType | "activity";
@@ -97,10 +99,14 @@ export function FoodList({
   readOnly = false,
   onUpdate,
   title = "오늘의 기록",
+  scrollTargetGroup = null,
+  onScrollHandled,
 }: FoodListProps) {
   const { updateMutation, deleteMutation } = useFoodMutations(date);
   const [filter, setFilter] = useState<RecordFilter>("all");
   const cardsRef = useRef<HTMLDivElement>(null);
+  const groupRefs = useRef<Partial<Record<GroupKey, HTMLElement | null>>>({});
+  const entryRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const [menuOpenId, setMenuOpenId] = useState<string | null>(null);
   const [menuPosition, setMenuPosition] = useState<{
@@ -141,6 +147,38 @@ export function FoodList({
 
     return groupedEntries.filter((group) => group.group === filter);
   }, [filter, groupedEntries]);
+
+  useEffect(() => {
+    if (!scrollTargetGroup) return;
+    const { group: targetGroup, entryId } = scrollTargetGroup;
+
+    const targetGroupExists = groupedEntries.some(
+      (group) => group.group === targetGroup,
+    );
+    if (!targetGroupExists) return;
+
+    if (filter !== "all" && filter !== targetGroup) {
+      const frameId = window.requestAnimationFrame(() => {
+        setFilter(targetGroup);
+      });
+
+      return () => window.cancelAnimationFrame(frameId);
+    }
+
+    const targetNode =
+      entryRefs.current[entryId] ?? groupRefs.current[targetGroup];
+    if (!targetNode) return;
+
+    const frameId = window.requestAnimationFrame(() => {
+      targetNode.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      onScrollHandled?.();
+    });
+
+    return () => window.cancelAnimationFrame(frameId);
+  }, [filter, groupedEntries, onScrollHandled, scrollTargetGroup]);
 
   useEffect(() => {
     if (!menuOpenId) return;
@@ -274,6 +312,9 @@ export function FoodList({
         {visibleGroups.map((group) => (
           <section
             key={group.group}
+            ref={(node) => {
+              groupRefs.current[group.group] = node;
+            }}
             className="rounded-2xl bg-surface-container-lowest px-5 shadow-[0_12px_32px_rgba(25,28,29,0.04)]"
           >
             <header className="flex items-center gap-2 pt-4">
@@ -341,6 +382,9 @@ export function FoodList({
                 return (
                   <div
                     key={entry.id}
+                    ref={(node) => {
+                      entryRefs.current[entry.id] = node;
+                    }}
                     className={`flex items-center justify-between gap-3 py-3.5 ${
                       showDivider ? "border-t border-[#f0f0f0]" : ""
                     }`}

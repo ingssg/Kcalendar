@@ -1,13 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import {
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useSyncExternalStore,
-} from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { today as getToday, formatDisplayDate } from "@/lib/date";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useDayRecord } from "@/lib/hooks/use-day-record";
@@ -28,6 +22,10 @@ import {
 } from "@/lib/login-nudge";
 
 const subscribeNoop = () => () => {};
+type ScrollTarget = {
+  group: "breakfast" | "lunch" | "dinner" | "activity";
+  entryId: string;
+};
 
 export default function TodayPage() {
   const router = useRouter();
@@ -37,18 +35,13 @@ export default function TodayPage() {
   const { record: dayRecord } = useDayRecord(todayStr);
   const [dismissedInlineBanner, setDismissedInlineBanner] = useState(false);
   const [dismissedIosToast, setDismissedIosToast] = useState(false);
-
-  const foodListRef = useRef<HTMLDivElement>(null);
+  const [pendingScrollGroup, setPendingScrollGroup] =
+    useState<ScrollTarget | null>(null);
 
   const reload = useCallback(() => {}, []);
 
-  const handleEntriesAdded = useCallback(() => {
-    requestAnimationFrame(() => {
-      foodListRef.current?.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    });
+  const handleEntriesAdded = useCallback((target: ScrollTarget) => {
+    setPendingScrollGroup(target);
   }, []);
 
   useEffect(() => {
@@ -109,9 +102,15 @@ export default function TodayPage() {
         )}
 
         {/* 음식 항목 리스트 */}
-        <div ref={foodListRef} className={entries.length > 0 ? "mt-4" : ""}>
+        <div className={entries.length > 0 ? "mt-4" : ""}>
           {todayStr && entries.length > 0 && (
-            <FoodList entries={entries} date={todayStr} onUpdate={reload} />
+            <FoodList
+              entries={entries}
+              date={todayStr}
+              onUpdate={reload}
+              scrollTargetGroup={pendingScrollGroup}
+              onScrollHandled={() => setPendingScrollGroup(null)}
+            />
           )}
         </div>
 

@@ -10,9 +10,15 @@ import type {
 import { ButtonGroup } from "@/components/button-group";
 import { useFoodMutations } from "@/lib/hooks/use-food-mutations";
 
+type AddedEntryGroup = MealType | "activity";
+type AddedEntriesTarget = {
+  group: AddedEntryGroup;
+  entryId: string;
+};
+
 interface FoodInputProps {
   date: string;
-  onEntriesAdded: () => void;
+  onEntriesAdded: (target: AddedEntriesTarget) => void;
 }
 
 const MEAL_OPTIONS: { value: MealType; label: string }[] = [
@@ -87,9 +93,14 @@ export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
             }
           : {}),
       }));
+      const targetGroup: AddedEntryGroup =
+        mode === "activity" ? "activity" : mealType!;
+      const targetEntryId = newEntries[0]?.id;
 
       await addMutation.mutateAsync(newEntries);
-      onEntriesAdded();
+      if (targetEntryId) {
+        onEntriesAdded({ group: targetGroup, entryId: targetEntryId });
+      }
       setInputText("");
       setMealType(null);
     } catch {
