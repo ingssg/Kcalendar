@@ -189,7 +189,7 @@ export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
           placeholder={
             mode === "food"
               ? "바나나 2개, 제육덮밥, 콜라 1캔…"
-              : "걷기 40분, 달리기 15분…"
+              : "걷기 40분, 달리기 15분, 푸쉬업 20회…"
           }
           rows={3}
           disabled={loading}
