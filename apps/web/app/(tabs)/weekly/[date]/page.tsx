@@ -28,7 +28,8 @@ export default function DateDetailPage() {
       <header className="fixed top-0 left-1/2 -translate-x-1/2 w-full max-w-107.5 z-50 bg-surface/80 backdrop-blur-md">
         <div className="px-6 py-4">
           <AppTopBar
-            logoSize="sm"
+            logoPriority
+            logoSize="md"
             leftSlot={
               <button
                 onClick={() => router.back()}
