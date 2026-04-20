@@ -7,6 +7,7 @@ import type {
   ParseActivityResponse,
   ParseFoodResponse,
 } from "@kcalendar/types";
+import { ButtonGroup } from "@/components/button-group";
 import { useFoodMutations } from "@/lib/hooks/use-food-mutations";
 
 interface FoodInputProps {
@@ -158,24 +159,13 @@ export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
         </label>
 
         {mode === "food" && (
-          <div className="flex gap-2">
-            {MEAL_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                onClick={() =>
-                  setMealType(mealType === opt.value ? null : opt.value)
-                }
-                className={`border px-4 py-1.5 rounded-full font-label text-xs font-medium tracking-wide transition-all duration-200 ${
-                  mealType === opt.value
-                    ? "border-on-surface-variant bg-on-surface-variant text-surface"
-                    : "border-outline-variant bg-surface-container-high text-on-surface-variant hover:text-on-surface"
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
+          <ButtonGroup
+            options={MEAL_OPTIONS}
+            value={mealType}
+            onChange={(v) => setMealType((prev) => (prev === v ? null : v))}
+            size="pill"
+            bordered
+          />
         )}
 
         <textarea

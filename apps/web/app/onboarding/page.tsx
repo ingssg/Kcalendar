@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import type { Gender } from "@kcalendar/types";
 import { AppTopBar } from "@/components/app-top-bar";
 import { AuthMenuButton } from "@/components/auth-menu-button";
+import { ButtonGroup } from "@/components/button-group";
 import { calculateBMR } from "@/lib/calorie";
 import { useProfile } from "@/lib/hooks/use-profile";
 
@@ -84,7 +85,7 @@ export default function OnboardingPage() {
           <AppTopBar
             logoPriority
             logoSize="md"
-            rightSlot={<AuthMenuButton profileHref="/onboarding" />}
+            rightSlot={<AuthMenuButton />}
           />
           <div>
             <h1 className="sr-only">Kcalendar</h1>
@@ -96,28 +97,15 @@ export default function OnboardingPage() {
         <main className="flex-grow space-y-10">
           {/* 성별 선택 */}
           <section className="space-y-4">
-            <div className="flex gap-4">
-              <button
-                onClick={() => setGenderOverride("male")}
-                className={`flex-1 py-4 rounded-md font-body text-sm font-medium transition-colors duration-200 ${
-                  gender === "male"
-                    ? "bg-primary text-on-primary"
-                    : "bg-surface-container-high text-on-surface hover:bg-surface-container-highest"
-                }`}
-              >
-                남
-              </button>
-              <button
-                onClick={() => setGenderOverride("female")}
-                className={`flex-1 py-4 rounded-md font-body text-sm font-medium transition-colors duration-200 ${
-                  gender === "female"
-                    ? "bg-primary text-on-primary"
-                    : "bg-surface-container-high text-on-surface hover:bg-surface-container-highest"
-                }`}
-              >
-                여
-              </button>
-            </div>
+            <ButtonGroup
+              options={[
+                { value: "male" as Gender, label: "남" },
+                { value: "female" as Gender, label: "여" },
+              ]}
+              value={gender}
+              onChange={setGenderOverride}
+              size="lg"
+            />
           </section>
 
           {/* 키 / 몸무게 입력 */}

@@ -83,11 +83,7 @@ export default function TodayPage() {
   return (
     <main className="w-full max-w-md mx-auto px-6 pt-5 pb-8 flex flex-col gap-4">
       <header className="flex flex-col gap-4">
-        <AppTopBar
-          logoPriority
-          logoSize="md"
-          rightSlot={<AuthMenuButton profileHref="/onboarding" />}
-        />
+        <AppTopBar logoPriority logoSize="md" rightSlot={<AuthMenuButton />} />
         <section>
           <h1 className="sr-only">오늘 기록</h1>
           <h2 className="font-headline text-3xl font-bold tracking-tight text-on-surface">

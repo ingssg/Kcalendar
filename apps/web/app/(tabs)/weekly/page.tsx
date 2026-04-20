@@ -73,11 +73,7 @@ export default function WeeklyPage() {
   return (
     <main className="w-full max-w-md mx-auto px-6 pt-5 pb-8">
       <header className="mb-5 flex flex-col gap-4">
-        <AppTopBar
-          logoPriority
-          logoSize="md"
-          rightSlot={<AuthMenuButton profileHref="/onboarding" />}
-        />
+        <AppTopBar logoPriority logoSize="md" rightSlot={<AuthMenuButton />} />
         <div className="flex items-center justify-between">
           <button
             onClick={() => setWeekOffset((current) => current - 1)}

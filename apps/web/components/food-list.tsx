@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { createPortal } from "react-dom";
 import type { FoodEntry, MealType } from "@kcalendar/types";
+import { ButtonGroup } from "@/components/button-group";
 import { useFoodMutations } from "@/lib/hooks/use-food-mutations";
 import { isActivityEntry } from "@/lib/entries";
 
@@ -248,31 +249,20 @@ export function FoodList({
         </h3>
       ) : null}
 
-      <div className="flex flex-wrap gap-2">
-        {FILTER_OPTIONS.map((option) => (
-          <button
-            key={option.value}
-            type="button"
-            data-shadow="none"
-            onClick={() => {
-              flushSync(() => setFilter(option.value));
-              if (!cardsRef.current) return;
-              const rect = cardsRef.current.getBoundingClientRect();
-              window.scrollTo({
-                top: window.scrollY + rect.top - 8,
-                behavior: "smooth",
-              });
-            }}
-            className={`px-4 py-1.5 rounded-full font-label text-xs font-medium tracking-wide transition-all duration-200 ${
-              filter === option.value
-                ? "bg-on-surface-variant text-surface"
-                : "bg-surface-container-high text-on-surface-variant hover:text-on-surface"
-            }`}
-          >
-            {option.label}
-          </button>
-        ))}
-      </div>
+      <ButtonGroup
+        options={FILTER_OPTIONS}
+        value={filter}
+        onChange={(v) => {
+          flushSync(() => setFilter(v));
+          if (!cardsRef.current) return;
+          const rect = cardsRef.current.getBoundingClientRect();
+          window.scrollTo({
+            top: window.scrollY + rect.top - 8,
+            behavior: "smooth",
+          });
+        }}
+        size="pill"
+      />
 
       <div ref={cardsRef} className="flex flex-col gap-3">
         {visibleGroups.length === 0 && filter !== "all" && (

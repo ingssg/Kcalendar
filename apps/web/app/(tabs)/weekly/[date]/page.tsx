@@ -40,7 +40,7 @@ export default function DateDetailPage() {
                 </span>
               </button>
             }
-            rightSlot={<AuthMenuButton profileHref="/onboarding" />}
+            rightSlot={<AuthMenuButton />}
           />
         </div>
       </header>
