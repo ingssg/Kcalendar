@@ -169,7 +169,8 @@ export default function OnboardingPage() {
                 className="absolute left-4 top-3 font-label text-xs tracking-widest text-on-surface-variant uppercase"
                 htmlFor="age"
               >
-                나이
+                나이{" "}
+                <span className="normal-case tracking-normal">(만나이)</span>
               </label>
               <input
                 id="age"
