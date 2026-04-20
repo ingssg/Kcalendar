@@ -13,15 +13,15 @@ export function TabBar() {
       className="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-[430px] flex justify-around items-center bg-surface z-50 rounded-t-lg"
       style={{
         borderTop: "1px solid rgba(198,198,198,0.15)",
-        paddingTop: "12px",
-        paddingBottom: "max(12px, env(safe-area-inset-bottom))",
+        paddingTop: "8px",
+        paddingBottom: "max(8px, env(safe-area-inset-bottom))",
         paddingLeft: "24px",
         paddingRight: "24px",
       }}
     >
       <Link
         href="/today"
-        className={`flex flex-1 flex-col items-center justify-center py-2 transition-opacity active:translate-y-0.5 duration-200 ${
+        className={`flex flex-1 flex-col items-center justify-center py-1 transition-opacity active:translate-y-0.5 duration-200 ${
           isToday
             ? "text-on-surface opacity-100"
             : "text-on-surface opacity-40 hover:opacity-60"
@@ -40,7 +40,7 @@ export function TabBar() {
 
       <Link
         href="/weekly"
-        className={`flex flex-1 flex-col items-center justify-center py-2 transition-opacity active:translate-y-0.5 duration-200 ${
+        className={`flex flex-1 flex-col items-center justify-center py-1 transition-opacity active:translate-y-0.5 duration-200 ${
           isWeekly
             ? "text-on-surface opacity-100"
             : "text-on-surface opacity-40 hover:opacity-60"
