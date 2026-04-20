@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { DayRecord } from "@kcalendar/types";
 import { parseDate } from "@/lib/date";
+import { calculateBurnCalories } from "@/lib/entries";
 
 const DAYS_KO = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -21,7 +22,8 @@ export function WeeklyRow({
   const day = date.getDate();
   const dayName = DAYS_KO[date.getDay()];
   const hasRecord = !!record && record.entries.length > 0;
-  const diff = hasRecord ? record.totalCalories - bmr : null;
+  const burnCalories = hasRecord ? calculateBurnCalories(record.entries) : 0;
+  const diff = hasRecord ? record.totalCalories - burnCalories - bmr : null;
   const isDeficit = diff !== null && diff < 0;
   const isSurplus = diff !== null && diff >= 0;
 

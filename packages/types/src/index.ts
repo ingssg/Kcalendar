@@ -1,4 +1,12 @@
 export type Gender = 'male' | 'female'
+export type EntryType = 'food' | 'activity'
+export type ActivityType =
+  | 'walk'
+  | 'run'
+  | 'cycling'
+  | 'strength'
+  | 'sports'
+  | 'other'
 
 export interface UserProfile {
   version: 1
@@ -12,10 +20,13 @@ export type MealType = 'breakfast' | 'lunch' | 'dinner'
 
 export interface FoodEntry {
   id: string
+  entryType: EntryType
   name: string
   calories: number | null // null = AI 추정 불가
   isEstimated: boolean
   mealType?: MealType
+  activityType?: ActivityType | null
+  durationMinutes?: number | null
 }
 
 export interface DayRecord {
@@ -41,4 +52,16 @@ export interface ParsedFoodItem {
 
 export interface ParseFoodResponse {
   items: ParsedFoodItem[]
+}
+
+export interface ParsedActivityItem {
+  name: string
+  calories: number | null
+  confidence: 'high' | 'medium' | 'low'
+  activityType: ActivityType | null
+  durationMinutes: number | null
+}
+
+export interface ParseActivityResponse {
+  items: ParsedActivityItem[]
 }

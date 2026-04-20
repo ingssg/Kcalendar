@@ -1,7 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { today as getToday, formatDisplayDate } from "@/lib/date";
 import { useAuth } from "@/lib/hooks/use-auth";
 import { useDayRecord } from "@/lib/hooks/use-day-record";
@@ -13,6 +19,7 @@ import { LoginBanner } from "@/components/login-banner";
 import { SummaryCard } from "@/components/summary-card";
 import { FoodList } from "@/components/food-list";
 import { FoodInput } from "@/components/food-input";
+import { calculateBurnCalories } from "@/lib/entries";
 import {
   dismissNudge,
   getRecordedDaysCount,
@@ -31,7 +38,18 @@ export default function TodayPage() {
   const [dismissedInlineBanner, setDismissedInlineBanner] = useState(false);
   const [dismissedIosToast, setDismissedIosToast] = useState(false);
 
+  const foodListRef = useRef<HTMLDivElement>(null);
+
   const reload = useCallback(() => {}, []);
+
+  const handleEntriesAdded = useCallback(() => {
+    requestAnimationFrame(() => {
+      foodListRef.current?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+  }, []);
 
   useEffect(() => {
     if (isProfileLoading || profile) return;
@@ -55,6 +73,8 @@ export default function TodayPage() {
   const bmr = profile?.bmr ?? 0;
   const totalCalories = dayRecord?.totalCalories ?? 0;
   const entries = dayRecord?.entries ?? [];
+  const burnCalories = calculateBurnCalories(entries);
+  const hasIntakeRecords = entries.length > 0;
 
   if (isProfileLoading || !profile) {
     return null;
@@ -81,20 +101,23 @@ export default function TodayPage() {
         <SummaryCard
           bmr={bmr}
           totalCalories={totalCalories}
-          hasRecords={entries.length > 0}
+          burnCalories={burnCalories}
+          hasRecords={hasIntakeRecords}
         />
       )}
 
       <div className="relative">
         {/* 자연어 입력창 */}
-        {todayStr && <FoodInput date={todayStr} onEntriesAdded={reload} />}
+        {todayStr && (
+          <FoodInput date={todayStr} onEntriesAdded={handleEntriesAdded} />
+        )}
 
         {/* 음식 항목 리스트 */}
-        {todayStr && entries.length > 0 && (
-          <div className="mt-4">
+        <div ref={foodListRef} className={entries.length > 0 ? "mt-4" : ""}>
+          {todayStr && entries.length > 0 && (
             <FoodList entries={entries} date={todayStr} onUpdate={reload} />
-          </div>
-        )}
+          )}
+        </div>
 
         {showInlineBanner && (
           <div className="absolute left-1/2 top-1/2 z-10 w-[calc(100%-1.5rem)] max-w-sm -translate-x-1/2 -translate-y-[calc(50%+50px)]">

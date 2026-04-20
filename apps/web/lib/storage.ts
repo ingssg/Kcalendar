@@ -1,4 +1,9 @@
 import type { AppStorage, DayRecord, FoodEntry } from "@kcalendar/types";
+import {
+  calculateIntakeCalories,
+  normalizeEntry,
+  normalizeEntries,
+} from "@/lib/entries";
 
 const STORAGE_KEY = "kcalendar";
 
@@ -120,8 +125,11 @@ export function addFoodEntries(
 ): DayRecord {
   const existing = getDayRecord(date);
   const now = new Date().toISOString();
-  const entries = [...(existing?.entries ?? []), ...newEntries];
-  const totalCalories = entries.reduce((sum, e) => sum + (e.calories ?? 0), 0);
+  const entries = normalizeEntries([
+    ...(existing?.entries ?? []),
+    ...newEntries,
+  ]);
+  const totalCalories = calculateIntakeCalories(entries);
 
   const record: DayRecord = {
     date,
@@ -151,10 +159,10 @@ export function updateFoodEntry(
   const record = getDayRecord(date);
   if (!record) return null;
 
-  const entries = record.entries.map((e) =>
-    e.id === entryId ? { ...e, ...patch } : e,
+  const entries = normalizeEntries(record.entries).map((e) =>
+    e.id === entryId ? normalizeEntry({ ...e, ...patch }) : e,
   );
-  const totalCalories = entries.reduce((sum, e) => sum + (e.calories ?? 0), 0);
+  const totalCalories = calculateIntakeCalories(entries);
   const updated: DayRecord = {
     ...record,
     entries,
@@ -173,8 +181,10 @@ export function deleteFoodEntry(
   const record = getDayRecord(date);
   if (!record) return null;
 
-  const entries = record.entries.filter((e) => e.id !== entryId);
-  const totalCalories = entries.reduce((sum, e) => sum + (e.calories ?? 0), 0);
+  const entries = normalizeEntries(record.entries).filter(
+    (e) => e.id !== entryId,
+  );
+  const totalCalories = calculateIntakeCalories(entries);
   const updated: DayRecord = {
     ...record,
     entries,
@@ -188,7 +198,25 @@ export function deleteFoodEntry(
 
 // 스키마 버전 마이그레이션 — v1이 현재 최신이므로 변환 없음
 function migrateIfNeeded(storage: AppStorage): AppStorage {
-  if (storage.version === 1) return storage;
+  if (storage.version === 1) {
+    return {
+      ...storage,
+      records: Object.fromEntries(
+        Object.entries(storage.records).map(([date, record]) => {
+          const entries = normalizeEntries(record.entries ?? []);
+
+          return [
+            date,
+            {
+              ...record,
+              entries,
+              totalCalories: calculateIntakeCalories(entries),
+            },
+          ];
+        }),
+      ),
+    };
+  }
   // 향후 버전 추가 시 여기서 처리
   return defaultStorage;
 }

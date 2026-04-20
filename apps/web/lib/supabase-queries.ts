@@ -1,14 +1,18 @@
 import type { DayRecord, FoodEntry, UserProfile } from "@kcalendar/types";
 import { getSupabaseBrowserClient } from "@/lib/supabase";
+import { calculateIntakeCalories, normalizeEntries } from "@/lib/entries";
 
 type FoodEntryRow = {
   id: string;
   user_id: string;
   date: string;
+  entry_type: FoodEntry["entryType"] | null;
   name: string;
   calories: number | null;
   is_estimated: boolean;
   meal_type: FoodEntry["mealType"] | null;
+  activity_type: FoodEntry["activityType"] | null;
+  duration_minutes: FoodEntry["durationMinutes"] | null;
   created_at: string;
   updated_at: string;
 };
@@ -25,17 +29,20 @@ type UserProfileRow = {
 };
 
 function mapFoodEntryRow(row: FoodEntryRow): FoodEntry {
-  return {
-    id: row.id,
-    name: row.name,
-    calories: row.calories,
-    isEstimated: row.is_estimated,
-    ...(row.meal_type ? { mealType: row.meal_type } : {}),
-  };
-}
-
-function calculateTotalCalories(entries: FoodEntry[]) {
-  return entries.reduce((sum, entry) => sum + (entry.calories ?? 0), 0);
+  return normalizeEntries([
+    {
+      id: row.id,
+      entryType: row.entry_type ?? "food",
+      name: row.name,
+      calories: row.calories,
+      isEstimated: row.is_estimated,
+      ...(row.meal_type ? { mealType: row.meal_type } : {}),
+      ...(row.activity_type ? { activityType: row.activity_type } : {}),
+      ...(row.duration_minutes !== null
+        ? { durationMinutes: row.duration_minutes }
+        : {}),
+    },
+  ])[0];
 }
 
 export function buildDayRecord(
@@ -50,10 +57,12 @@ export function buildDayRecord(
     return null;
   }
 
+  const normalizedEntries = normalizeEntries(entries);
+
   return {
     date,
-    entries,
-    totalCalories: calculateTotalCalories(entries),
+    entries: normalizedEntries,
+    totalCalories: calculateIntakeCalories(normalizedEntries),
     createdAt: timestamps?.createdAt ?? new Date().toISOString(),
     updatedAt:
       timestamps?.updatedAt ??
@@ -97,9 +106,9 @@ export function mergeFoodEntries(
 export async function fetchDayEntries(userId: string, date: string) {
   const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
-    .from("food_entries")
+    .from("entries")
     .select(
-      "id, user_id, date, name, calories, is_estimated, meal_type, created_at, updated_at",
+      "id, user_id, date, entry_type, name, calories, is_estimated, meal_type, activity_type, duration_minutes, created_at, updated_at",
     )
     .eq("user_id", userId)
     .eq("date", date)
@@ -119,9 +128,9 @@ export async function fetchWeekEntries(userId: string, dates: string[]) {
 
   const supabase = getSupabaseBrowserClient();
   const { data, error } = await supabase
-    .from("food_entries")
+    .from("entries")
     .select(
-      "id, user_id, date, name, calories, is_estimated, meal_type, created_at, updated_at",
+      "id, user_id, date, entry_type, name, calories, is_estimated, meal_type, activity_type, duration_minutes, created_at, updated_at",
     )
     .eq("user_id", userId)
     .in("date", dates)
@@ -151,18 +160,23 @@ export async function insertFoodEntries(
   entries: FoodEntry[],
 ) {
   const supabase = getSupabaseBrowserClient();
-  const rows = entries.map((entry) => ({
+  const rows = normalizeEntries(entries).map((entry) => ({
     id: entry.id,
     user_id: userId,
     date,
+    entry_type: entry.entryType,
     name: entry.name,
     calories: entry.calories,
     is_estimated: entry.isEstimated,
-    meal_type: entry.mealType ?? null,
+    meal_type: entry.entryType === "activity" ? null : (entry.mealType ?? null),
+    activity_type:
+      entry.entryType === "activity" ? (entry.activityType ?? null) : null,
+    duration_minutes:
+      entry.entryType === "activity" ? (entry.durationMinutes ?? null) : null,
   }));
 
   const { error } = await supabase
-    .from("food_entries")
+    .from("entries")
     .upsert(rows, { onConflict: "id" });
 
   if (error) {
@@ -186,7 +200,7 @@ export async function patchFoodEntry(
   }
 
   const { error } = await supabase
-    .from("food_entries")
+    .from("entries")
     .update(nextPatch)
     .eq("id", entryId);
 
@@ -197,10 +211,7 @@ export async function patchFoodEntry(
 
 export async function removeFoodEntry(entryId: string) {
   const supabase = getSupabaseBrowserClient();
-  const { error } = await supabase
-    .from("food_entries")
-    .delete()
-    .eq("id", entryId);
+  const { error } = await supabase.from("entries").delete().eq("id", entryId);
 
   if (error) {
     throw error;

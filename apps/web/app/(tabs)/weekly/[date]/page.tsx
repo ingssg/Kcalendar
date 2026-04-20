@@ -1,9 +1,10 @@
 "use client";
 
 import { useRouter, useParams } from "next/navigation";
-import { formatDisplayDate, formatFoodRecordTitle } from "@/lib/date";
+import { formatDisplayDate } from "@/lib/date";
 import { useDayRecord } from "@/lib/hooks/use-day-record";
 import { useProfile } from "@/lib/hooks/use-profile";
+import { calculateBurnCalories } from "@/lib/entries";
 import { AppTopBar } from "@/components/app-top-bar";
 import { AuthMenuButton } from "@/components/auth-menu-button";
 import { SummaryCard } from "@/components/summary-card";
@@ -19,6 +20,8 @@ export default function DateDetailPage() {
   const bmr = profile?.bmr ?? 0;
   const totalCalories = dayRecord?.totalCalories ?? 0;
   const entries = dayRecord?.entries ?? [];
+  const burnCalories = calculateBurnCalories(entries);
+  const hasIntakeRecords = entries.length > 0;
 
   return (
     <>
@@ -52,17 +55,13 @@ export default function DateDetailPage() {
           <SummaryCard
             bmr={bmr}
             totalCalories={totalCalories}
-            hasRecords={entries.length > 0}
+            burnCalories={burnCalories}
+            hasRecords={hasIntakeRecords}
           />
         )}
 
         {entries.length > 0 ? (
-          <FoodList
-            entries={entries}
-            date={dateStr}
-            readOnly
-            title={formatFoodRecordTitle(dateStr)}
-          />
+          <FoodList entries={entries} date={dateStr} readOnly title="" />
         ) : (
           <p className="font-body text-sm text-on-surface-variant">
             이 날의 기록이 없습니다.

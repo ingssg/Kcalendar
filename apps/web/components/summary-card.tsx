@@ -1,20 +1,22 @@
 interface SummaryCardProps {
   bmr: number;
   totalCalories: number;
+  burnCalories?: number;
   hasRecords: boolean;
 }
 
 export function SummaryCard({
   bmr,
   totalCalories,
+  burnCalories = 0,
   hasRecords,
 }: SummaryCardProps) {
-  const diff = totalCalories - bmr;
-  const percentage = bmr > 0 ? (totalCalories / bmr) * 100 : 0;
+  const netCalories = totalCalories - burnCalories;
+  const diff = netCalories - bmr;
+  const percentage = bmr > 0 ? (netCalories / bmr) * 100 : 0;
   const isOver = diff > 0;
-  const progressWidth = Math.min(percentage, 100);
+  const progressWidth = Math.min(Math.max(percentage, 0), 100);
 
-  // 기록 없으면 중립 배경, 있으면 상태 반응형
   const bgColor = !hasRecords
     ? "#f3f4f5"
     : isOver
@@ -31,7 +33,7 @@ export function SummaryCard({
 
   return (
     <section
-      className="rounded-xl p-6 flex flex-col gap-6 shadow-[0_12px_32px_rgba(25,28,29,0.04)]"
+      className="rounded-xl border border-outline-variant p-6 flex flex-col gap-6 shadow-[0_12px_32px_rgba(25,28,29,0.04)]"
       style={{ backgroundColor: bgColor }}
     >
       <div className="grid grid-cols-3 gap-3">
@@ -48,15 +50,15 @@ export function SummaryCard({
           </span>
         </div>
 
-        {/* 섭취 */}
+        {/* 소비 (식사 - 활동) */}
         <div className="flex flex-col gap-1 min-w-0 pl-3" style={colSeparator}>
           <span className="font-label text-[0.6875rem] tracking-wider uppercase text-on-surface-variant font-medium truncate">
-            섭취
+            소비
           </span>
           {hasRecords ? (
             <>
               <span className="font-headline text-2xl font-bold text-on-surface leading-tight">
-                {totalCalories.toLocaleString()}
+                {netCalories.toLocaleString()}
               </span>
               <span className="font-label text-[0.6875rem] text-on-surface-variant">
                 kcal
@@ -104,7 +106,7 @@ export function SummaryCard({
         </div>
         <span className="font-label text-[0.6875rem] text-on-surface-variant">
           {hasRecords
-            ? `기준의 ${percentage.toFixed(1)}% 섭취`
+            ? `기준의 ${percentage.toFixed(1)}% 소비`
             : "기록하기 버튼으로 오늘 먹은 것을 입력하세요"}
         </span>
       </div>

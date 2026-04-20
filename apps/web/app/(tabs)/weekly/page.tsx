@@ -16,6 +16,7 @@ import { AuthMenuButton } from "@/components/auth-menu-button";
 import { LoginBanner } from "@/components/login-banner";
 import { WeeklyRow } from "@/components/weekly-row";
 import { dismissNudge, shouldShowNudge } from "@/lib/login-nudge";
+import { calculateBurnCalories } from "@/lib/entries";
 
 const subscribeNoop = () => () => {};
 
@@ -32,15 +33,13 @@ export default function WeeklyPage() {
   const bmr = profile?.bmr ?? 0;
   const { records } = useWeeklyRecords(weekDates);
 
-  const recordedDays = weekDates.filter((d) => {
-    const r = records[d];
-    return r && r.entries.length > 0;
-  }).length;
+  const recordedDays = weekDates.filter((d) => !!records[d]).length;
 
   const weekNetCalories = weekDates.reduce((sum, d) => {
     const r = records[d];
-    if (!r || r.entries.length === 0) return sum;
-    return sum + (r.totalCalories - bmr);
+    if (!r) return sum;
+    const burn = calculateBurnCalories(r.entries);
+    return sum + (r.totalCalories - burn - bmr);
   }, 0);
 
   const netColor =
