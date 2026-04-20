@@ -262,6 +262,7 @@ export function FoodList({
           });
         }}
         size="pill"
+        tone="strong"
       />
 
       <div ref={cardsRef} className="flex flex-col gap-3">
@@ -279,7 +280,7 @@ export function FoodList({
               <span
                 className={`rounded-full px-2.5 py-0.5 font-label text-[0.625rem] font-medium tracking-widest ${
                   group.group === "activity"
-                    ? "bg-surface-container-high text-on-surface-variant"
+                    ? "bg-secondary/12 text-secondary"
                     : "bg-surface-container-high text-on-surface-variant"
                 }`}
               >

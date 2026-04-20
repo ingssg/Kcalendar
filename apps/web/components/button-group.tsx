@@ -11,6 +11,7 @@ interface ButtonGroupProps<T extends string> {
   onChange: (value: T) => void;
   size?: "lg" | "pill";
   bordered?: boolean;
+  tone?: "default" | "strong";
 }
 
 export function ButtonGroup<T extends string>({
@@ -19,6 +20,7 @@ export function ButtonGroup<T extends string>({
   onChange,
   size = "pill",
   bordered = false,
+  tone = "default",
 }: ButtonGroupProps<T>) {
   if (size === "lg") {
     return (
@@ -53,8 +55,14 @@ export function ButtonGroup<T extends string>({
             bordered ? " border" : ""
           } ${
             value === opt.value
-              ? `bg-on-surface-variant text-surface${bordered ? " border-on-surface-variant" : ""}`
-              : `bg-surface-container-high text-on-surface-variant hover:text-on-surface${bordered ? " border-outline-variant" : ""}`
+              ? `bg-on-surface-variant ${
+                  tone === "strong" ? "text-on-primary" : "text-surface"
+                }${bordered ? " border-on-surface-variant" : ""}`
+              : `bg-surface-container-high ${
+                  tone === "strong"
+                    ? "text-on-surface"
+                    : "text-on-surface-variant"
+                } hover:text-on-surface${bordered ? " border-outline-variant" : ""}`
           }`}
         >
           {opt.label}
