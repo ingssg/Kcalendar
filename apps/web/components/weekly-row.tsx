@@ -36,9 +36,9 @@ export function WeeklyRow({
 
   if (!hasRecord) {
     return (
-      <div className="w-full flex items-center justify-between p-5 rounded-xl bg-surface-container text-left relative overflow-hidden">
-        <div className="flex items-baseline gap-3">
-          <span className="font-headline font-bold text-xl text-surface-tint">
+      <div className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-surface-container text-left relative overflow-hidden">
+        <div className="flex items-baseline gap-2">
+          <span className="font-headline font-bold text-base text-surface-tint">
             {day}
           </span>
           <span className="font-label text-xs uppercase tracking-widest text-surface-tint">
@@ -50,7 +50,7 @@ export function WeeklyRow({
             </span>
           )}
         </div>
-        <div className="font-headline font-semibold text-lg text-surface-tint">
+        <div className="font-headline font-semibold text-base text-surface-tint">
           —
         </div>
       </div>
@@ -60,7 +60,7 @@ export function WeeklyRow({
   return (
     <Link
       href={`/weekly/${dateStr}`}
-      className="w-full flex items-center justify-between p-5 rounded-xl bg-surface-container-low transition-colors hover:bg-surface-container text-left relative overflow-hidden active:scale-[0.98]"
+      className="w-full flex items-center justify-between px-4 py-3 rounded-xl bg-surface-container-low transition-colors hover:bg-surface-container text-left relative overflow-hidden active:scale-[0.98]"
     >
       {isDeficit && (
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-secondary" />
@@ -68,9 +68,9 @@ export function WeeklyRow({
       {isSurplus && (
         <div className="absolute left-0 top-0 bottom-0 w-1 bg-tertiary" />
       )}
-      <div className="flex items-center gap-3 pl-2">
-        <div className="flex items-baseline gap-3">
-          <span className="font-headline font-bold text-xl text-on-surface">
+      <div className="flex items-center gap-2 pl-2">
+        <div className="flex items-baseline gap-2">
+          <span className="font-headline font-bold text-base text-on-surface">
             {day}
           </span>
           <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant">
@@ -85,7 +85,7 @@ export function WeeklyRow({
       </div>
       <div className="flex items-baseline gap-1">
         <span
-          className={`font-headline font-bold text-xl tracking-tight ${
+          className={`font-headline font-bold text-base tracking-tight ${
             isDeficit ? "text-secondary" : "text-tertiary"
           }`}
         >

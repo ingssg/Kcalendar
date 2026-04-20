@@ -42,6 +42,21 @@ export default function WeeklyPage() {
     return sum + (r.totalCalories - burn - bmr);
   }, 0);
 
+  const weekTotalNet = weekDates.reduce((sum, d) => {
+    const r = records[d];
+    if (!r) return sum;
+    const burn = calculateBurnCalories(r.entries);
+    return sum + (r.totalCalories - burn);
+  }, 0);
+  const avgDailyNet =
+    recordedDays > 0 ? Math.round(weekTotalNet / recordedDays) : null;
+  const avgColor =
+    avgDailyNet === null
+      ? "text-on-surface"
+      : avgDailyNet < bmr
+        ? "text-secondary"
+        : "text-tertiary";
+
   const netColor =
     weekNetCalories < 0
       ? "text-secondary"
@@ -56,8 +71,8 @@ export default function WeeklyPage() {
     shouldShowNudge("weekly", { ignoreSession: true });
 
   return (
-    <main className="w-full max-w-md mx-auto px-6 pt-8 pb-8">
-      <header className="mb-8 flex flex-col gap-5">
+    <main className="w-full max-w-md mx-auto px-6 pt-5 pb-8">
+      <header className="mb-5 flex flex-col gap-4">
         <AppTopBar
           logoPriority
           logoSize="md"
@@ -92,8 +107,8 @@ export default function WeeklyPage() {
       </header>
 
       {/* 7일 행 */}
-      <div className="relative mb-10">
-        <div className="flex flex-col gap-3">
+      <div className="relative mb-5">
+        <div className="flex flex-col gap-2">
           {weekDates.map((d) => (
             <WeeklyRow
               key={d}
@@ -119,14 +134,14 @@ export default function WeeklyPage() {
       </div>
 
       {/* 주간 요약 카드 */}
-      <div className="grid grid-cols-5 gap-4">
-        <div className="col-span-3 bg-surface-container-low p-6 rounded-xl flex flex-col justify-between h-32 shadow-[0_12px_32px_rgba(25,28,29,0.04)]">
+      <div className="grid grid-cols-2 gap-3">
+        <div className="bg-surface-container p-3 rounded-xl flex flex-col justify-between h-20">
           <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-medium">
             주간 합계
           </span>
           <div className="flex items-end gap-1">
             <span
-              className={`font-headline font-bold text-3xl tracking-tighter ${netColor}`}
+              className={`font-headline font-bold text-xl tracking-tighter ${netColor}`}
             >
               {weekNetCalories === 0
                 ? "—"
@@ -135,23 +150,28 @@ export default function WeeklyPage() {
                   : weekNetCalories.toLocaleString()}
             </span>
             {weekNetCalories !== 0 && (
-              <span className="font-label text-xs text-on-surface-variant mb-1">
+              <span className="font-label text-xs text-on-surface-variant mb-0.5">
                 kcal
               </span>
             )}
           </div>
         </div>
-        <div className="col-span-2 bg-surface-container p-6 rounded-xl flex flex-col justify-between h-32">
+        <div className="bg-surface-container p-3 rounded-xl flex flex-col justify-between h-20">
           <span className="font-label text-xs uppercase tracking-widest text-on-surface-variant font-medium">
-            기록
+            일평균
           </span>
-          <div className="flex items-end gap-1">
-            <span className="font-headline font-bold text-3xl tracking-tighter text-on-surface">
-              {recordedDays}
+          <div className="flex items-baseline gap-1">
+            <span
+              className={`font-headline font-bold text-xl tracking-tighter ${avgColor}`}
+            >
+              {avgDailyNet !== null ? avgDailyNet.toLocaleString() : "—"}
             </span>
-            <span className="font-headline font-semibold text-lg text-surface-tint mb-0.5">
-              /7
-            </span>
+            {avgDailyNet !== null && bmr > 0 && (
+              <span className={`font-label text-[12px] ${avgColor}`}>
+                ({avgDailyNet - bmr > 0 ? "+" : ""}
+                {(avgDailyNet - bmr).toLocaleString()} kcal)
+              </span>
+            )}
           </div>
         </div>
       </div>
