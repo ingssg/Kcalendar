@@ -8,6 +8,7 @@ import type {
   ParseFoodResponse,
 } from "@kcalendar/types";
 import { ButtonGroup } from "@/components/button-group";
+import { ArrowRightIcon } from "@/components/icons";
 import { useFoodMutations } from "@/lib/hooks/use-food-mutations";
 
 type AddedEntryGroup = MealType | "activity";
@@ -208,11 +209,7 @@ export function FoodInput({ date, onEntriesAdded }: FoodInputProps) {
                 ? "기록하기"
                 : "활동 기록하기"}
           </span>
-          {!loading && (
-            <span className="material-symbols-outlined text-[18px]">
-              arrow_forward
-            </span>
-          )}
+          {!loading && <ArrowRightIcon className="h-[18px] w-[18px]" />}
           {loading && (
             <span className="w-[18px] h-[18px] border-2 border-on-primary/30 border-t-on-primary rounded-full animate-spin" />
           )}

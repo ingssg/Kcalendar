@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { CloseIcon } from "@/components/icons";
 import { signInWithGoogle } from "@/lib/auth";
 
 type LoginBannerProps = {
@@ -58,7 +59,7 @@ export function LoginBanner({ variant, onDismiss }: LoginBannerProps) {
           className="flex h-9 w-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
           aria-label="로그인 유도 닫기"
         >
-          <span className="material-symbols-outlined text-[18px]">close</span>
+          <CloseIcon className="h-[18px] w-[18px]" />
         </button>
       </div>
 

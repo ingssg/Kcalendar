@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { TodayIcon, WeeklyIcon } from "@/components/icons";
 
 export function TabBar() {
   const pathname = usePathname();
@@ -27,12 +28,7 @@ export function TabBar() {
             : "text-on-surface opacity-40 hover:opacity-60"
         }`}
       >
-        <span
-          className="material-symbols-outlined mb-1"
-          style={{ fontVariationSettings: isToday ? "'FILL' 1" : "'FILL' 0" }}
-        >
-          calendar_today
-        </span>
+        <TodayIcon active={isToday} className="mb-1 h-6 w-6" />
         <span className="font-label text-[10px] uppercase tracking-[0.1em] font-medium">
           오늘
         </span>
@@ -46,12 +42,7 @@ export function TabBar() {
             : "text-on-surface opacity-40 hover:opacity-60"
         }`}
       >
-        <span
-          className="material-symbols-outlined mb-1"
-          style={{ fontVariationSettings: isWeekly ? "'FILL' 1" : "'FILL' 0" }}
-        >
-          bar_chart
-        </span>
+        <WeeklyIcon active={isWeekly} className="mb-1 h-6 w-6" />
         <span className="font-label text-[10px] uppercase tracking-[0.1em] font-medium">
           주간
         </span>

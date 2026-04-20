@@ -33,13 +33,6 @@ export default function RootLayout({
 }) {
   return (
     <html lang="ko">
-      <head>
-        {/* eslint-disable-next-line @next/next/no-page-custom-font */}
-        <link
-          rel="stylesheet"
-          href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
-        />
-      </head>
       {/* 데스크탑: surface-dim 배경 + 중앙 모바일 컨테이너 */}
       <body className="bg-surface-dim min-h-dvh flex justify-center">
         <QueryProvider>

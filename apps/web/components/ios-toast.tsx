@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { CloseIcon } from "@/components/icons";
 import { signInWithGoogle } from "@/lib/auth";
 
 type IosToastProps = {
@@ -55,7 +56,7 @@ export function IosToast({ onDismiss }: IosToastProps) {
             className="flex h-9 w-9 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container-high hover:text-on-surface"
             aria-label="토스트 닫기"
           >
-            <span className="material-symbols-outlined text-[18px]">close</span>
+            <CloseIcon className="h-[18px] w-[18px]" />
           </button>
         </div>
 

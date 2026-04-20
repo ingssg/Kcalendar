@@ -7,6 +7,7 @@ import { useProfile } from "@/lib/hooks/use-profile";
 import { calculateBurnCalories } from "@/lib/entries";
 import { AppTopBar } from "@/components/app-top-bar";
 import { AuthMenuButton } from "@/components/auth-menu-button";
+import { ArrowLeftIcon } from "@/components/icons";
 import { SummaryCard } from "@/components/summary-card";
 import { FoodList } from "@/components/food-list";
 
@@ -35,9 +36,7 @@ export default function DateDetailPage() {
                 onClick={() => router.back()}
                 className="flex items-center justify-center w-10 h-10 rounded-full hover:bg-surface-container-high transition-colors active:scale-95 duration-200"
               >
-                <span className="material-symbols-outlined text-on-surface">
-                  arrow_back
-                </span>
+                <ArrowLeftIcon className="h-5 w-5 text-on-surface" />
               </button>
             }
             rightSlot={<AuthMenuButton />}

@@ -13,6 +13,7 @@ import { useProfile } from "@/lib/hooks/use-profile";
 import { useWeeklyRecords } from "@/lib/hooks/use-weekly-records";
 import { AppTopBar } from "@/components/app-top-bar";
 import { AuthMenuButton } from "@/components/auth-menu-button";
+import { ChevronLeftIcon, ChevronRightIcon } from "@/components/icons";
 import { LoginBanner } from "@/components/login-banner";
 import { WeeklyRow } from "@/components/weekly-row";
 import { dismissNudge, shouldShowNudge } from "@/lib/login-nudge";
@@ -80,9 +81,7 @@ export default function WeeklyPage() {
             disabled={!anchorDate}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-colors"
           >
-            <span className="material-symbols-outlined text-sm">
-              arrow_back_ios_new
-            </span>
+            <ChevronLeftIcon className="h-4 w-4" />
           </button>
           <div>
             <h1 className="sr-only">주간 기록</h1>
@@ -95,9 +94,7 @@ export default function WeeklyPage() {
             disabled={!anchorDate}
             className="w-10 h-10 flex items-center justify-center rounded-full bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-high transition-colors"
           >
-            <span className="material-symbols-outlined text-sm">
-              arrow_forward_ios
-            </span>
+            <ChevronRightIcon className="h-4 w-4" />
           </button>
         </div>
       </header>

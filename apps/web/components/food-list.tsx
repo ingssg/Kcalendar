@@ -5,6 +5,7 @@ import { flushSync } from "react-dom";
 import { createPortal } from "react-dom";
 import type { FoodEntry, MealType } from "@kcalendar/types";
 import { ButtonGroup } from "@/components/button-group";
+import { DeleteIcon, EditIcon, MoreVerticalIcon } from "@/components/icons";
 import { useFoodMutations } from "@/lib/hooks/use-food-mutations";
 import { isActivityEntry } from "@/lib/entries";
 
@@ -468,9 +469,7 @@ export function FoodList({
                           className="rounded-full p-1 text-on-surface-variant transition-colors hover:text-on-surface"
                           aria-label="더보기"
                         >
-                          <span className="material-symbols-outlined text-[21px]">
-                            more_vert
-                          </span>
+                          <MoreVerticalIcon className="h-[21px] w-[21px]" />
                         </button>
                       )}
                       {readOnly && <span className="h-7 w-7 shrink-0" />}
@@ -531,18 +530,14 @@ export function FoodList({
               }}
               className="flex w-full items-center gap-2 px-4 py-3 font-body text-sm text-on-surface shadow-none transition-colors hover:bg-surface-container-low hover:shadow-none"
             >
-              <span className="material-symbols-outlined text-[16px]">
-                edit
-              </span>
+              <EditIcon className="h-[16px] w-[16px]" />
               수정
             </button>
             <button
               onClick={() => handleDelete(menuOpenId)}
               className="flex w-full items-center gap-2 px-4 py-3 font-body text-sm text-tertiary shadow-none transition-colors hover:bg-surface-container-low hover:shadow-none"
             >
-              <span className="material-symbols-outlined text-[16px]">
-                delete
-              </span>
+              <DeleteIcon className="h-[16px] w-[16px]" />
               삭제
             </button>
           </div>,
