@@ -29,32 +29,26 @@ function SvgIcon({
 }
 
 export function TodayIcon({
-  active,
+  active: _active,
   className = "",
 }: IconProps & { active: boolean }) {
   return (
-    <SvgIcon className={className} fill={active ? "currentColor" : "none"}>
+    <SvgIcon className={className} fill="none">
       <rect x="3.5" y="5" width="17" height="15.5" rx="3.2" />
       <path d="M7.5 3.5v4" />
       <path d="M16.5 3.5v4" />
       <path d="M3.5 9.5h17" />
-      <circle
-        cx="12"
-        cy="14.5"
-        r="2.2"
-        fill={active ? "var(--color-surface)" : "currentColor"}
-        stroke="none"
-      />
+      <circle cx="12" cy="14.5" r="2.2" fill="currentColor" stroke="none" />
     </SvgIcon>
   );
 }
 
 export function WeeklyIcon({
-  active,
+  active: _active,
   className = "",
 }: IconProps & { active: boolean }) {
   return (
-    <SvgIcon className={className} fill={active ? "currentColor" : "none"}>
+    <SvgIcon className={className} fill="none">
       <rect x="3.5" y="4" width="17" height="16" rx="3.2" />
       <path d="M7 15.5V12.5" />
       <path d="M12 15.5V9.5" />
