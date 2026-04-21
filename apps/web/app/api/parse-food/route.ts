@@ -105,7 +105,7 @@ export async function POST(req: NextRequest) {
       calories:
         item.unit_calories === null
           ? null
-          : item.unit_calories * Math.max(1, item.quantity),
+          : Math.round(item.unit_calories * Math.max(1, item.quantity)),
       confidence: item.confidence,
     }));
 
